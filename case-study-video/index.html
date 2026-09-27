@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1080">
+<title>Intilaqah · UX Case Study Reel</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<style>
+:root{
+  --bg:#070b16; --bg2:#0c1324; --line:#1b2540; --panel:#0f1830; --panel2:#131e3a;
+  --text:#eef3ff; --dim:#8c9bbb; --dim2:#5d6b8a;
+  --yellow:#fcc208; --blue:#1976d2; --sel:#0d99ff; --comp:#9747ff; --green:#3daa52; --red:#ff6b5a; --navy:#0b2a5b;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif}
+.ar{font-family:'Cairo',sans-serif;direction:rtl;unicode-bidi:isolate}
+.mono{font-family:'JetBrains Mono',monospace}
+.scene{position:absolute;inset:0;opacity:0;visibility:hidden}
+
+/* canvas */
+#grid{position:absolute;inset:-80px;background-image:radial-gradient(circle,#223055 1.6px,transparent 1.8px);background-size:40px 40px}
+#vign{position:absolute;inset:0;background:radial-gradient(120% 70% at 50% 45%,rgba(7,11,22,0) 40%,rgba(7,11,22,.85) 100%)}
+.glow{position:absolute;border-radius:50%;filter:blur(90px);opacity:.35}
+
+/* chrome */
+#chrome{position:absolute;left:60px;right:60px;top:78px;height:60px;display:flex;align-items:center;justify-content:space-between;z-index:30;opacity:0}
+#chrome .l{display:flex;align-items:center;gap:18px;font-size:25px;color:var(--dim)}
+#chrome .l img{width:44px;height:54px;object-fit:contain}
+#chrome .l b{color:var(--text);font-weight:700}
+#chrome .r{font-size:24px;color:var(--dim);display:flex;align-items:center;gap:12px}
+#chrome .r i{width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+#prog{position:absolute;left:60px;right:60px;top:160px;height:6px;display:flex;gap:10px;z-index:30;opacity:0}
+#prog span{flex:1;border-radius:3px;background:#1a2440;overflow:hidden;position:relative}
+#prog span b{position:absolute;inset:0;background:var(--yellow);transform-origin:left;transform:scaleX(0)}
+
+/* typography */
+.tag{position:absolute;left:60px;top:240px;font-family:'JetBrains Mono',monospace;font-size:28px;letter-spacing:.14em;color:var(--yellow);display:flex;align-items:center;gap:20px}
+.tag:after{content:"";width:120px;height:2px;background:var(--yellow);opacity:.6}
+.h{position:absolute;left:60px;right:60px;top:300px;font-weight:800;font-size:72px;white-space:nowrap;line-height:1.08;letter-spacing:-.025em}
+.h .y{color:var(--yellow)}
+.h .ln{display:block;overflow:hidden;padding-bottom:6px}
+.h .ln>span{display:inline-block}
+
+/* cursor */
+#cursor{position:absolute;left:0;top:0;z-index:45;width:60px;height:60px;opacity:0}
+#cursor svg{width:44px;height:44px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5))}
+#cursor .nm{position:absolute;left:36px;top:34px;background:var(--comp);color:#fff;font-weight:700;font-size:22px;padding:4px 14px;border-radius:8px 8px 8px 2px;white-space:nowrap}
+
+/* selection box */
+.selbox{position:absolute;border:3px solid var(--sel);pointer-events:none}
+.selbox i{position:absolute;width:16px;height:16px;background:#fff;border:3px solid var(--sel)}
+.selbox i:nth-child(1){left:-9px;top:-9px}.selbox i:nth-child(2){right:-9px;top:-9px}.selbox i:nth-child(3){left:-9px;bottom:-9px}.selbox i:nth-child(4){right:-9px;bottom:-9px}
+.selbox .dim{position:absolute;left:50%;bottom:-48px;transform:translateX(-50%);background:var(--sel);color:#fff;font-family:'JetBrains Mono',monospace;font-size:20px;padding:2px 12px;border-radius:6px;white-space:nowrap}
+.flabel{position:absolute;font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--dim)}
+
+/* S0 intro */
+#s0 .frame{position:absolute;left:90px;top:470px;width:900px;height:980px}
+#s0 .fbg{position:absolute;inset:0;background:linear-gradient(160deg,#0f1a36,#0a1128);border-radius:6px}
+#s0 .kick{position:absolute;left:70px;top:90px;font-size:28px;letter-spacing:.18em;color:var(--yellow)}
+#s0 .title{position:absolute;left:66px;top:150px;font-weight:900;font-size:150px;letter-spacing:-.04em;line-height:1}
+#s0 .arname{position:absolute;right:70px;top:320px;font-weight:900;font-size:100px;color:var(--yellow);line-height:1.3;white-space:nowrap}
+#s0 .sub{position:absolute;left:70px;right:70px;top:520px;font-size:40px;line-height:1.4;color:#c8d3ee;font-weight:500}
+#s0 .logo{position:absolute;right:70px;top:150px;width:120px;height:147px;object-fit:contain}
+#s0 .chips{position:absolute;left:70px;right:70px;top:700px;display:flex;flex-wrap:wrap;gap:14px}
+.chip{display:inline-flex;align-items:center;gap:12px;border:2px solid #2a3860;background:rgba(19,30,58,.8);border-radius:999px;padding:8px 24px;font-weight:600;font-size:30px;color:#dbe4fa;white-space:nowrap}
+.chip i{width:12px;height:12px;border-radius:50%;background:var(--yellow)}
+#s0 .by{position:absolute;left:90px;top:1520px;display:flex;align-items:center;gap:24px}
+#s0 .by .av{width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,var(--yellow),#ff9f1a);color:var(--navy);font-weight:900;font-size:40px;display:flex;align-items:center;justify-content:center}
+#s0 .by b{display:block;font-size:44px;font-weight:800}
+#s0 .by span{font-size:30px;color:var(--dim);font-family:'JetBrains Mono',monospace}
+
+/* S1 insights */
+.icard{position:absolute;left:60px;width:960px;height:238px;border-radius:32px;background:var(--panel);border:2px solid #1f2b4d;overflow:hidden}
+.icard .top{position:absolute;left:40px;right:40px;top:28px;display:flex;justify-content:space-between;align-items:center}
+.icard .top .mono{font-size:22px;letter-spacing:.14em;color:var(--dim2)}
+.icard .top .ar{font-size:30px;color:#ffb3a8;font-weight:700}
+.icard .prob{position:absolute;left:40px;top:78px;font-size:48px;font-weight:700;color:#fff;white-space:nowrap}
+.icard .prob s{position:absolute;left:-6px;right:-6px;top:52%;height:5px;background:var(--red);transform-origin:left;transform:scaleX(0);text-decoration:none}
+.icard .ans{position:absolute;left:40px;top:152px;font-size:38px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:16px;white-space:nowrap}
+.icard .ans em{font-style:normal;width:46px;height:46px;border-radius:50%;background:rgba(61,170,82,.18);display:inline-flex;align-items:center;justify-content:center;font-size:28px}
+.icard .bar{position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--red)}
+
+/* S2 research */
+#s2 .methods{position:absolute;left:60px;right:60px;top:560px;display:flex;flex-wrap:wrap;gap:16px}
+#s2 .sec{position:absolute;left:60px;font-size:24px;letter-spacing:.14em;color:var(--dim)}
+#s2 .comps{position:absolute;left:60px;right:60px;top:870px;display:flex;flex-wrap:wrap;gap:16px}
+#s2 .comps .chip{font-family:'Cairo',sans-serif;font-weight:700;border-color:#3a2f10;background:rgba(252,194,8,.08);color:#ffe28a}
+.persona{position:absolute;top:1040px;width:468px;height:470px;border-radius:32px;background:var(--panel);border:2px solid #1f2b4d;padding:36px}
+.persona .ph{display:flex;align-items:center;gap:20px}
+.persona .pav{width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.persona .pav svg{width:48px;height:48px}
+.persona h4{font-size:40px;font-weight:800;line-height:1.1}
+.persona h4 small{display:block;font-family:'Cairo',sans-serif;font-size:28px;color:var(--dim);font-weight:700}
+.persona ul{list-style:none;margin-top:30px;display:flex;flex-direction:column;gap:18px}
+.persona li{font-size:30px;color:#c8d3ee;display:flex;gap:14px;align-items:flex-start;line-height:1.3}
+.persona li:before{content:"";flex:none;width:12px;height:12px;border-radius:3px;background:var(--yellow);margin-top:13px}
+#s2 .pillars{position:absolute;left:60px;right:60px;top:1600px;display:flex;flex-wrap:wrap;gap:12px}
+#s2 .pillars .chip{font-size:26px;padding:6px 20px;border-color:#233158}
+
+/* S3 IA */
+#iaSvg{position:absolute;left:0;top:0;width:1080px;height:1920px}
+.ia{position:absolute;white-space:nowrap;border-radius:18px;padding:10px 26px;font-weight:700;font-size:32px;background:var(--panel2);border:2px solid #2a3860;color:#dbe4fa}
+.ia.root{background:var(--yellow);color:var(--navy);border-color:var(--yellow);font-size:40px;font-weight:900;padding:14px 40px}
+.ia.br{background:#132247;border-color:var(--sel);color:#fff;font-size:34px}
+.ia.ar{font-size:32px;padding:6px 26px}
+.ia.first{border-color:var(--yellow);box-shadow:0 0 0 6px rgba(252,194,8,.18)}
+.ia.sm{font-size:24px;padding:4px 16px;border-radius:12px;color:var(--dim)}
+.firstNote{position:absolute;font-family:'JetBrains Mono',monospace;font-size:22px;color:var(--yellow);white-space:nowrap}
+.states{position:absolute;left:60px;right:60px;top:1480px}
+.states .row{display:flex;align-items:center;gap:14px;margin-top:20px}
+.st{border-radius:16px;padding:12px 22px;font-size:28px;font-weight:700;background:var(--panel2);border:2px solid #2a3860;white-space:nowrap}
+.st small{display:block;font-size:20px;color:var(--dim);font-family:'JetBrains Mono',monospace;font-weight:500}
+.arrow{color:var(--dim2);font-size:30px}
+.st.soon{border-style:dashed;color:var(--dim)}
+
+/* S4 design system */
+.sw{position:absolute;width:300px;height:170px;border-radius:24px;overflow:hidden;background:var(--panel);border:2px solid #1f2b4d}
+.sw .c{height:92px}
+.sw .t{padding:10px 18px;font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--dim);line-height:1.35}
+.sw .t b{color:#fff;font-weight:700;font-size:22px}
+.tspec{position:absolute;left:60px;right:60px;top:980px;height:470px;border-radius:32px;background:var(--panel);border:2px solid #1f2b4d}
+.tspec .big{position:absolute;right:44px;top:30px;font-family:'Cairo',sans-serif;font-weight:900;font-size:150px;line-height:1.2;color:#fff}
+.tspec .fam{position:absolute;left:40px;top:40px;font-size:24px;letter-spacing:.14em;color:var(--dim)}
+.tspec .fam b{display:block;font-family:'Cairo',sans-serif;font-size:64px;letter-spacing:0;color:#fff;font-weight:800;margin-top:6px}
+.trow{position:absolute;left:40px;right:40px;display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid #1f2b4d;padding-top:14px}
+.trow .mono{font-size:22px;color:var(--dim)}
+.trow .ar{color:#fff}
+.dchips{position:absolute;left:60px;right:60px;top:1490px;display:flex;flex-wrap:wrap;gap:14px}
+.dchips .chip{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:500}
+.dchips .chip b{color:var(--yellow);font-weight:700}
+/* component */
+.cframe{position:absolute;border:3px dashed var(--comp);border-radius:10px}
+.clabel{position:absolute;font-size:24px;font-weight:700;color:var(--comp);white-space:nowrap;display:flex;align-items:center;gap:10px}
+.clabel svg{width:24px;height:24px}
+.opt{position:absolute;left:110px;width:860px;height:140px;border-radius:34px;background:#fff;border:5px solid #e2e8f2;display:flex;align-items:center;justify-content:space-between;padding:0 44px;font-family:'Cairo',sans-serif;font-weight:700;font-size:40px;color:#16202b;direction:rtl;box-shadow:0 5px 0 #e2e8f2}
+.opt .rd{width:54px;height:54px;border-radius:50%;border:5px solid #d3dceb;display:flex;align-items:center;justify-content:center;flex:none}
+.opt .rd svg{width:30px;height:30px;opacity:0}
+.panel{position:absolute;left:110px;width:860px;border-radius:24px;background:#1e1e1e;border:2px solid #2c2c2c;padding:26px 34px;font-size:26px;color:#e6e6e6}
+.panel .ph{display:flex;align-items:center;gap:12px;color:var(--comp);font-weight:700;font-size:26px;margin-bottom:20px}
+.panel .ph svg{width:26px;height:26px}
+.prow{display:flex;align-items:center;justify-content:space-between;height:68px}
+.prow .k{color:#9a9a9a}
+.dd{width:430px;height:58px;border-radius:12px;background:#2c2c2c;border:2px solid #3a3a3a;position:relative;overflow:hidden}
+.dd span{position:absolute;left:20px;top:0;line-height:54px;font-weight:600;white-space:nowrap}
+.dd:after{content:"▾";position:absolute;right:18px;top:0;line-height:54px;color:#9a9a9a}
+.nodes{position:absolute;left:110px;width:860px;display:flex;justify-content:space-around}
+.nv{display:flex;flex-direction:column;align-items:center;gap:22px}
+.nv .n{width:150px;height:150px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;border:12px solid #d3dceb;box-shadow:0 10px 0 rgba(0,0,0,.25)}
+.nv .n svg{width:64px;height:64px}
+.nv span{font-family:'JetBrains Mono',monospace;font-size:22px;color:var(--dim)}
+
+/* S5 phone */
+.phone{position:absolute;left:66px;top:520px;width:572px;height:1206px;border-radius:78px;background:#030712;padding:14px;box-shadow:0 0 0 3px #26324f,0 40px 90px rgba(0,0,0,.6)}
+.phone .scr{width:544px;height:1178px;border-radius:66px;overflow:hidden;position:relative}
+.pin{position:absolute;left:0;top:0;width:375px;height:812px;transform:scale(1.4507);transform-origin:0 0;background:linear-gradient(180deg,#4a86d8 0%,#6aa2ee 30%,#86aaf1 62%,#b3b2ef 88%,#c3b8f0 100%);font-family:'Cairo',sans-serif;direction:rtl;color:#16202b;overflow:hidden}
+.pin .fade{position:absolute;left:0;right:0;top:0;height:190px;background:linear-gradient(180deg,#eef4fc 0%,#e3edfb 70%,rgba(227,237,251,0) 100%)}
+.pin .sbar{position:absolute;left:18px;right:18px;top:4px;display:flex;justify-content:space-between;font-family:'Inter';font-size:10px;font-weight:600;direction:ltr}
+.pin .hdr{position:absolute;left:10px;right:10px;top:24px;height:26px;border-radius:13px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center}
+.pin .hdr i{width:18px;height:18px;border-radius:5px;background:#fcc208}
+.pin .hud{position:absolute;left:16px;right:16px;top:60px;height:40px;border-radius:14px;background:#fff;box-shadow:0 2px 6px rgba(11,42,91,.08);display:flex;align-items:center;justify-content:space-between;padding:0 8px}
+.pin .subj{display:flex;align-items:center;gap:4px;border:1.5px solid #e2e8f2;border-radius:10px;padding:1px 10px;font-size:12px;font-weight:700;color:#0b2a5b}
+.pin .icons{display:flex;align-items:center;gap:16px;font-family:'Inter';font-size:12px;font-weight:700;color:#0b2a5b;direction:ltr}
+.pin .icons svg{width:16px;height:16px}
+.pin .unit{position:absolute;right:20px;top:112px;font-size:17px;font-weight:800;color:#0b2a5b;display:flex;gap:8px;align-items:center}
+.pin .pbar{position:absolute;left:20px;right:20px;top:146px;height:6px;border-radius:3px;background:#fff;direction:ltr}
+.pin .pbar b{position:absolute;right:0;top:0;bottom:0;width:38%;border-radius:3px;background:#fcc208}
+.pin .plbl{position:absolute;left:20px;top:128px;font-size:10px;color:#5c6a79;font-weight:600}
+.pn{position:absolute;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:#fff;border:4px solid #3daa52;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 0 rgba(11,42,91,.15)}
+.pn svg{width:24px;height:24px}
+.pn.act{border-color:#fcc208}
+.pn.lock{border-color:#d3dceb;background:#eef2f8}
+.pl{position:absolute;margin-top:-12px;font-size:11px;font-weight:700;color:#0b2a5b;background:#fff;border:1.5px solid #3daa52;border-radius:999px;padding:0 9px;white-space:nowrap;line-height:20px}
+.pl.act{border-color:#fcc208}.pl.lock{border-color:#d3dceb;color:#7d8a9c}
+.pin .nav{position:absolute;left:12px;right:12px;top:742px;height:58px;border-radius:22px;background:rgba(255,255,255,.95);box-shadow:0 4px 16px rgba(11,42,91,.15);display:flex;justify-content:space-around;align-items:center}
+.pin .nav div{display:flex;flex-direction:column;align-items:center;font-size:9.5px;font-weight:700;color:#5c6a79;gap:2px;position:relative}
+.pin .nav div.on{color:#1976d2}
+.pin .nav div.on:before{content:"";position:absolute;top:-9px;width:28px;height:3px;border-radius:2px;background:#1976d2}
+.pin .nav svg{width:18px;height:18px}
+.pin .mt{position:absolute;left:0;right:0;bottom:0;height:120px}
+.pin .rocket{position:absolute;width:44px;height:62px}
+.ann{position:absolute;left:670px;width:360px}
+.ann .num{display:inline-flex;width:44px;height:44px;border-radius:50%;background:var(--yellow);color:var(--navy);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;align-items:center;justify-content:center}
+.ann b{display:block;font-size:32px;font-weight:800;margin-top:10px;line-height:1.15}
+.ann p{font-size:24px;color:var(--dim);margin-top:6px;line-height:1.35}
+#annSvg{position:absolute;left:0;top:0;width:1080px;height:1920px;pointer-events:none}
+.hot{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:var(--yellow);box-shadow:0 0 0 8px rgba(252,194,8,.25)}
+
+/* S6 states */
+.cell{position:absolute;width:225px}
+.cell .img{width:225px;height:506px;border-radius:26px;overflow:hidden;background:#fff;box-shadow:0 20px 40px rgba(0,0,0,.45)}
+.cell img{width:100%;height:100%;object-fit:cover;object-position:top}
+.cell span{display:block;margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--dim);text-align:center;white-space:nowrap}
+
+/* S7 scale */
+#wall{position:absolute;left:-260px;top:-300px;width:1600px;height:2600px;display:flex;gap:28px;transform:rotate(-12deg)}
+#wall .col{display:flex;flex-direction:column;gap:28px;width:250px}
+#wall img{width:250px;border-radius:24px;display:block;box-shadow:0 20px 40px rgba(0,0,0,.4)}
+#wall img.d{width:250px}
+#wallShade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,22,.92) 0%,rgba(7,11,22,.55) 35%,rgba(7,11,22,.55) 70%,rgba(7,11,22,.95) 100%)}
+.stats{position:absolute;left:60px;right:60px;top:600px;display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.stat{border-radius:32px;background:rgba(12,19,36,.82);border:2px solid #24325a;padding:34px 36px;backdrop-filter:blur(6px)}
+.stat b{display:block;font-weight:900;font-size:120px;letter-spacing:-.04em;line-height:1;color:#fff}
+.stat b em{font-style:normal;color:var(--yellow)}
+.stat>span{display:block;margin-top:12px;font-size:28px;color:#c8d3ee;font-weight:600}
+.stat small{display:block;font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--dim);margin-top:6px}
+.bpts{position:absolute;left:60px;right:60px;top:1340px;display:flex;gap:18px;flex-wrap:wrap}
+
+/* S8 outro */
+#s8 .logo{position:absolute;left:430px;top:420px;width:220px;height:270px;object-fit:contain}
+#s8 .t1{position:absolute;left:0;right:0;top:760px;text-align:center;font-weight:900;font-size:120px;letter-spacing:-.04em}
+#s8 .t2{position:absolute;left:0;right:0;top:900px;text-align:center;font-size:30px;letter-spacing:.2em;color:var(--yellow)}
+#s8 .line{position:absolute;left:340px;right:340px;top:990px;height:2px;background:#2a3860}
+#s8 .who{position:absolute;left:0;right:0;top:1060px;text-align:center}
+#s8 .who b{display:block;font-size:66px;font-weight:800;letter-spacing:-.02em}
+#s8 .who span{display:block;font-size:34px;color:var(--dim);margin-top:8px;font-family:'JetBrains Mono',monospace}
+#s8 .flow{position:absolute;left:60px;right:60px;top:1300px;display:flex;flex-wrap:wrap;justify-content:center;gap:14px}
+#s8 .flow .chip{font-size:25px;padding:6px 18px}
+#s8 .flow{gap:10px}
+#s8 .flow .sep{color:var(--dim2);font-size:30px;align-self:center}
+#s8 .foot{position:absolute;left:0;right:0;top:1500px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:24px;color:var(--dim)}
+
+#flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:60}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="grid"></div>
+  <div class="glow" id="g1" style="left:-200px;top:200px;width:700px;height:700px;background:#1976d2"></div>
+  <div class="glow" id="g2" style="left:600px;top:1200px;width:700px;height:700px;background:#9747ff;opacity:.22"></div>
+  <div id="vign"></div>
+
+  <!-- chrome -->
+  <div id="chrome">
+    <div class="l mono"><img src="assets/logo.png" alt=""><span><b>Intilaqah</b> / UX Case Study</span></div>
+    <div class="r mono"><i></i>Sayed Hamouda · UI/UX</div>
+  </div>
+  <div id="prog"><span><b></b></span><span><b></b></span><span><b></b></span><span><b></b></span><span><b></b></span><span><b></b></span><span><b></b></span></div>
+
+  <!-- ========== S0 INTRO ========== -->
+  <section class="scene" id="s0">
+    <div class="flabel" id="s0lbl" style="left:90px;top:432px">Frame · Cover</div>
+    <div class="frame" id="s0frame">
+      <div class="fbg"></div>
+      <div class="kick mono">UX CASE STUDY · 2026</div>
+      <div class="title">Intilaqah</div>
+      <img class="logo" src="assets/logo.png" alt="">
+      <div class="arname ar">أكاديمية انطلاقة</div>
+      <div class="sub">A gamified, Arabic-first learning platform for Grade 9–10 students in Oman.</div>
+      <div class="chips">
+        <span class="chip"><i></i>Research</span><span class="chip"><i></i>Information Architecture</span><span class="chip"><i></i>Design System</span><span class="chip"><i></i>UI</span><span class="chip"><i></i>Motion</span>
+      </div>
+    </div>
+    <div class="selbox" id="s0sel" style="left:90px;top:470px;width:900px;height:980px"><i></i><i></i><i></i><i></i><div class="dim">900 × 980</div></div>
+    <div class="by"><div class="av">SH</div><div><b>Sayed Hamouda</b><span>UI/UX Designer</span></div></div>
+  </section>
+
+  <!-- ========== S1 PROBLEM ========== -->
+  <section class="scene" id="s1">
+    <div class="tag">01 — THE PROBLEM</div>
+    <div class="h"><span class="ln"><span>Content isn't missing.</span></span><span class="ln"><span class="y">Motivation is.</span></span></div>
+    <div id="icards"></div>
+  </section>
+
+  <!-- ========== S2 RESEARCH ========== -->
+  <section class="scene" id="s2">
+    <div class="tag">02 — RESEARCH</div>
+    <div class="h"><span class="ln"><span>Grounded in <span class="y">research,</span></span></span><span class="ln"><span>not guesses.</span></span></div>
+    <div class="methods">
+      <span class="chip"><i></i>Competitive analysis</span><span class="chip"><i></i>SWOT</span><span class="chip"><i></i>Affinity mapping</span><span class="chip"><i></i>Proto-personas</span><span class="chip"><i></i>Journey maps</span><span class="chip"><i></i>Claims guardrails</span>
+    </div>
+    <div class="sec mono" style="top:815px">BENCHMARKED</div>
+    <div class="comps"><span class="chip">يوتيوب</span><span class="chip">نون أكاديمي</span><span class="chip">همم</span><span class="chip">أبواب</span><span class="chip">مثابر</span></div>
+    <div class="persona" id="pS" style="left:60px">
+      <div class="ph"><div class="pav" style="background:rgba(25,118,210,.2)"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="#5aa9ff"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" fill="#5aa9ff"/></svg></div><h4>The Student<small>الطالب</small></h4></div>
+      <ul><li>Grade 9–10 · Oman</li><li>Mobile-first, bored by long videos</li><li>Needs structure &amp; a reason to return</li></ul>
+    </div>
+    <div class="persona" id="pP" style="left:552px">
+      <div class="ph"><div class="pav" style="background:rgba(61,170,82,.2)"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5" fill="#5fd07a"/><circle cx="17" cy="9" r="2.6" fill="#5fd07a"/><path d="M2 20c0-3.9 3.1-6 7-6s7 2.1 7 6M14.5 14.3c3.6-.4 7.5 1.2 7.5 5.7" fill="#5fd07a"/></svg></div><h4>The Parent<small>ولي الأمر</small></h4></div>
+      <ul><li>Wants trust &amp; visibility</li><li>Weekly WhatsApp progress report</li><li>No extra app, no login</li></ul>
+    </div>
+    <div class="sec mono" style="top:1550px">MESSAGING PILLARS</div>
+    <div class="pillars"><span class="chip">Clarity</span><span class="chip">Trust</span><span class="chip">Order over chaos</span><span class="chip">Positive competition</span><span class="chip">Human support</span></div>
+  </section>
+
+  <!-- ========== S3 IA ========== -->
+  <section class="scene" id="s3">
+    <div class="tag">03 — INFORMATION ARCHITECTURE</div>
+    <div class="h"><span class="ln"><span>One structure.</span></span><span class="ln"><span class="y">Four user states.</span></span></div>
+    <svg id="iaSvg" viewBox="0 0 1080 1920"></svg>
+    <div id="iaNodes"></div>
+    <div class="states">
+      <div class="sec mono" style="position:static;font-size:24px;letter-spacing:.14em;color:var(--dim)">ACCESS RULES · USER STATES</div>
+      <div class="row">
+        <div class="st">Visitor<small>public site</small></div><span class="arrow">→</span>
+        <div class="st">Registered<small>free trial</small></div><span class="arrow">→</span>
+        <div class="st" style="border-color:var(--yellow)">Purchased<small>full path</small></div>
+      </div>
+      <div class="row"><div class="st soon">Grade 11–12<small>coming soon · waitlist</small></div></div>
+    </div>
+  </section>
+
+  <!-- ========== S4 DESIGN SYSTEM ========== -->
+  <section class="scene" id="s4">
+    <div class="tag">04 — DESIGN SYSTEM</div>
+    <div class="h"><span class="ln"><span>Tokens → Components</span></span><span class="ln"><span>→ <span class="y">Variants</span></span></span></div>
+    <div id="dsA">
+      <div id="swatches"></div>
+      <div class="tspec">
+        <div class="fam mono">FONT FAMILY<b>Cairo</b></div>
+        <div class="big">أبجد</div>
+        <div class="trow" style="top:230px"><span class="mono">H6 · 17/25 · Bold</span><span class="ar" style="font-size:44px;font-weight:700">قوانين نيوتن</span></div>
+        <div class="trow" style="top:300px"><span class="mono">Body-lg · 15/22 · SemiBold</span><span class="ar" style="font-size:38px;font-weight:600">ابدأ التجربة</span></div>
+        <div class="trow" style="top:362px"><span class="mono">Body · 14/20 · SemiBold</span><span class="ar" style="font-size:35px;font-weight:600">إجابة صحيحة! ممتاز</span></div>
+        <div class="trow" style="top:418px"><span class="mono">Caption · 12/17</span><span class="ar" style="font-size:30px;font-weight:600;color:#8c9bbb">دروس مكتملة 3/8</span></div>
+      </div>
+      <div class="dchips"><span class="chip">radius/tile <b>16</b></span><span class="chip">radius/badge <b>999</b></span><span class="chip">button/lg <b>52</b></span><span class="chip">spacing/3 <b>12</b></span><span class="chip">elevation/<b>E1</b></span></div>
+    </div>
+    <div id="dsB" style="opacity:0">
+      <div class="clabel" style="left:110px;top:548px"><svg viewBox="0 0 24 24"><path d="M12 2l4 4-4 4-4-4zM6 8l4 4-4 4-4-4zM18 8l4 4-4 4-4-4zM12 14l4 4-4 4-4-4z" fill="#9747ff"/></svg>Option / MCQ</div>
+      <div class="cframe" style="left:80px;top:590px;width:920px;height:200px"></div>
+      <div class="opt" id="optC" style="top:620px"><span>القوة = الكتلة × التسارع</span><span class="rd"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+      <div class="panel" style="top:840px">
+        <div class="ph"><svg viewBox="0 0 24 24"><path d="M12 2l4 4-4 4-4-4zM6 8l4 4-4 4-4-4zM18 8l4 4-4 4-4-4zM12 14l4 4-4 4-4-4z" fill="#9747ff"/></svg>Option / MCQ</div>
+        <div class="prow"><span class="k">State</span><div class="dd" id="ddState"><span id="stv0">Default</span><span id="stv1" style="opacity:0">Selected</span><span id="stv2" style="opacity:0">Correct</span><span id="stv3" style="opacity:0">Wrong + explain</span></div></div>
+        <div class="prow"><span class="k">Type</span><div class="dd"><span>Text</span></div></div>
+        <div class="prow"><span class="k">Context</span><div class="dd"><span>Lesson · Challenge · Weekly</span></div></div>
+      </div>
+      <div class="clabel" style="left:110px;top:1218px"><svg viewBox="0 0 24 24"><path d="M12 2l4 4-4 4-4-4zM6 8l4 4-4 4-4-4zM18 8l4 4-4 4-4-4zM12 14l4 4-4 4-4-4z" fill="#9747ff"/></svg>Map / Node</div>
+      <div class="cframe" style="left:80px;top:1260px;width:920px;height:300px"></div>
+      <div class="nodes" style="top:1290px">
+        <div class="nv"><div class="n" style="border-color:#3daa52"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#3daa52" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>state=done</span></div>
+        <div class="nv"><div class="n" style="border-color:#fcc208"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="4" fill="#1976d2"/><path d="M10 9l5 3-5 3z" fill="#fcc208"/></svg></div><span>state=active</span></div>
+        <div class="nv"><div class="n" style="background:#eef2f8"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="#a7b3c5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke="#a7b3c5" stroke-width="2.4" fill="none"/></svg></div><span>state=locked</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== S5 UI ========== -->
+  <section class="scene" id="s5">
+    <div class="tag">05 — UI &amp; GAME MECHANICS</div>
+    <div class="h"><span class="ln"><span>Designed like a game.</span></span><span class="ln"><span class="y">Built like a product.</span></span></div>
+    <div class="phone" id="phone"><div class="scr"><div class="pin" id="pin">
+      <svg class="mt" viewBox="0 0 375 120" preserveAspectRatio="none"><path d="M0 60 L50 40 L80 10 L110 40 L170 30 L230 50 L280 20 L320 0 L345 30 L375 25 L375 120 L0 120Z" fill="#bcc0f4"/><path d="M0 85 L90 70 L180 88 L270 68 L375 84 L375 120 L0 120Z" fill="#a4a9ee"/></svg>
+      <div class="fade"></div>
+      <div class="sbar"><span>9:41</span><span>100%</span></div>
+      <div class="hdr"><i></i></div>
+      <div class="hud"><span class="subj">الفيزياء ⚡</span><span class="icons"><span style="color:#ff5a36">🔥 7</span><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="3" fill="none" stroke="#1976d2" stroke-width="2.2"/></svg><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8" fill="none" stroke="#0b2a5b" stroke-width="2.2"/><path d="M12 9v4l2 2M10 3h4" stroke="#0b2a5b" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></span></div>
+      <div class="unit">الوحدة 2 · الحركة والقوة <span style="color:#1976d2">⚑</span></div>
+      <div class="plbl">دروس مكتملة 3/8</div>
+      <div class="pbar"><b></b></div>
+      <svg style="position:absolute;left:0;top:0" width="375" height="812"><path d="M200 270 C200 330 125 330 125 390 C125 450 200 450 200 510 C200 570 125 570 125 630" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="0 12" stroke-linecap="round" opacity=".8"/></svg>
+      <div class="pn" style="left:200px;top:270px"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#3daa52" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="pl" style="right:211px;top:270px">الطاقة</div>
+      <div class="pn" style="left:125px;top:390px"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#3daa52" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="pl" style="right:188px;top:390px;right:auto;left:164px">الحركة</div>
+      <div class="pn act" style="left:200px;top:510px" id="actNode"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="4" fill="#1976d2"/><path d="M10 9l5 3-5 3z" fill="#fcc208"/></svg></div>
+      <div class="pl act" style="left:239px;top:510px">قوانين نيوتن</div>
+      <div class="pn lock" style="left:125px;top:630px"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="#a7b3c5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke="#a7b3c5" stroke-width="2.4" fill="none"/></svg></div>
+      <div class="pl lock" style="left:164px;top:630px">الإلكترونيات</div>
+      <div class="rocket" data-mascot style="left:118px;top:478px"></div>
+      <div class="nav">
+        <div class="on"><svg viewBox="0 0 24 24"><path d="M4 18c3-8 6 2 9-6s5-4 7-6" stroke="#1976d2" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>مساري</div>
+        <div><svg viewBox="0 0 24 24"><path d="M4 20V13h5v7M10 20V8h5v12M16 20v-5h5v5" stroke="#0b2a5b" stroke-width="2" fill="none"/></svg>المتصدرون</div>
+        <div><svg viewBox="0 0 24 24"><circle cx="8" cy="9" r="3" stroke="#0b2a5b" stroke-width="2" fill="none"/><circle cx="16" cy="9" r="3" stroke="#0b2a5b" stroke-width="2" fill="none"/><path d="M3 19c1-3 4-4 5-4M21 19c-1-3-4-4-5-4" stroke="#0b2a5b" stroke-width="2" fill="none"/></svg>ملتقى العباقرة</div>
+        <div><svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7zM9 8a3 3 0 0 1 6 0" stroke="#0b2a5b" stroke-width="2" fill="none"/></svg>المتجر</div>
+        <div><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3" fill="#fcc208"/><circle cx="16" cy="8" r="3" stroke="#0b2a5b" stroke-width="2" fill="none"/><circle cx="8" cy="16" r="3" stroke="#0b2a5b" stroke-width="2" fill="none"/><circle cx="16" cy="16" r="3" stroke="#0b2a5b" stroke-width="2" fill="none"/></svg>المزيد</div>
+      </div>
+    </div></div></div>
+    <svg id="annSvg" viewBox="0 0 1080 1920"></svg>
+    <div id="anns"></div>
+  </section>
+
+  <!-- ========== S6 STATES ========== -->
+  <section class="scene" id="s6">
+    <div class="tag">06 — STATES &amp; EDGE CASES</div>
+    <div class="h"><span class="ln"><span>Every flow ships</span></span><span class="ln"><span class="y">with its states.</span></span></div>
+    <div id="cells"></div>
+    <div class="selbox" id="s6sel" style="left:60px;top:560px;width:225px;height:506px;opacity:0"><i></i><i></i><i></i><i></i></div>
+  </section>
+
+  <!-- ========== S7 SCALE ========== -->
+  <section class="scene" id="s7">
+    <div id="wall"></div>
+    <div id="wallShade"></div>
+    <div class="tag">07 — SCALE</div>
+    <div class="h"><span class="ln"><span>Not a few screens.</span></span><span class="ln"><span>A <span class="y">complete product.</span></span></span></div>
+    <div class="stats">
+      <div class="stat"><b><span id="c1">0</span></b><span>Hi-fi screens</span><small>Mobile + Desktop</small></div>
+      <div class="stat"><b><span id="c2">0</span></b><span>User flows</span><small>Onboarding → Learning → Store</small></div>
+      <div class="stat"><b><span id="c3">0</span><em>+</em></b><span>Component instances</span><small>on one Figma page</small></div>
+      <div class="stat"><b><span id="c4">0</span></b><span>Breakpoints</span><small>375 · 1440</small></div>
+    </div>
+    <div class="bpts"><span class="chip"><i></i>RTL · Arabic-first</span><span class="chip"><i></i>Mobile-first</span><span class="chip"><i></i>Auto Layout</span><span class="chip"><i></i>Variants</span><span class="chip"><i></i>Motion specs</span></div>
+  </section>
+
+  <!-- ========== S8 OUTRO ========== -->
+  <section class="scene" id="s8">
+    <img class="logo" src="assets/logo.png" alt="">
+    <div class="t1">Intilaqah</div>
+    <div class="t2 mono">UX CASE STUDY</div>
+    <div class="line"></div>
+    <div class="who"><b>Sayed Hamouda</b><span>UI/UX Designer</span></div>
+    <div class="flow"><span class="chip">Research</span><span class="sep">→</span><span class="chip">IA</span><span class="sep">→</span><span class="chip">Design System</span><span class="sep">→</span><span class="chip">UI</span><span class="sep">→</span><span class="chip">Motion</span></div>
+    <div class="foot">Arabic · RTL · Mobile-first · Gamified learning</div>
+  </section>
+
+  <div id="cursor"><svg viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.6-7.9L21 10.5z" fill="#fff" stroke="#0a0f1c" stroke-width="1.4" stroke-linejoin="round"/></svg><div class="nm">Sayed</div></div>
+  <div id="flash"></div>
+</div>
+
+<script src="assets/gsap.min.js"></script>
+<script>
+const DUR = 57;
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+
+// mini mascot (same rocket as the product)
+const MASCOT = `<svg viewBox="0 0 120 170" style="width:100%;height:100%"><path d="M42 126 Q60 178 78 126Z" fill="#ff7a1a"/><path d="M51 126 Q60 158 69 126Z" fill="#ffd23f"/><path d="M31 92 C15 100 8 118 10 136 C18 127 27 123 37 123 Z" fill="#f4602a"/><path d="M89 92 C105 100 112 118 110 136 C102 127 93 123 83 123 Z" fill="#e8501f"/><path d="M60 6 C88 6 98 44 98 80 C98 110 88 128 60 132 C32 128 22 110 22 80 C22 44 32 6 60 6Z" fill="#fcc208"/><path d="M25 106 Q60 118 95 106 L93 115 Q60 127 27 115Z" fill="#e89e00"/><circle cx="60" cy="42" r="15.5" fill="#0b2a5b"/><circle cx="60" cy="42" r="11" fill="#9ccaf7"/><path d="M41 75 q6.5 -8 13 0M66 75 q6.5 -8 13 0" stroke="#0b2a5b" stroke-width="4.2" fill="none" stroke-linecap="round"/><path d="M47 85 Q60 101 73 85 Z" fill="#0b2a5b"/></svg>`;
+$$('[data-mascot]').forEach(e => e.innerHTML = MASCOT);
+
+// ---------- S1 cards ----------
+const INS = [
+  ['Long, boring lessons', 'محتوى طويل وممل', 'Micro-lessons in 4 short stages'],
+  ['Weak motivation', 'تحفيز ضعيف', 'Meaningful gamification: path · streak · coins'],
+  ['Limited support', 'دعم محدود', 'Ask-the-teacher community'],
+  ['Dated, academic UIs', 'واجهات تقليدية', 'Playful, youthful, Arabic-first UI'],
+];
+INS.forEach((c, i) => $('#icards').insertAdjacentHTML('beforeend', `<div class="icard" id="ic${i}" style="top:${580 + i * 262}px"><div class="bar"></div>
+  <div class="top"><span class="mono">INSIGHT 0${i + 1}</span><span class="ar">${c[1]}</span></div>
+  <div class="prob"><span>${c[0]}</span><s></s></div>
+  <div class="ans"><em>→</em>${c[2]}</div></div>`));
+
+// ---------- S3 IA tree ----------
+const IA = { root: [540, 590], pub: [250, 730], app: [790, 730] };
+const PUB = ['Home', 'About', 'FAQ', 'Contact', 'Register', 'Login'];
+const TABS = ['مساري', 'المتصدرون', 'ملتقى العباقرة', 'المتجر', 'المزيد'];
+const MORE = ['حسابي', 'مشترياتي', 'الرصيد', 'المساعد الذكي', 'الإعدادات'];
+let iaH = '', svgH = '';
+const node = (x, y, cls, txt, id) => iaH += `<div class="ia ${cls}" id="${id}" style="left:${x}px;top:${y}px">${txt}</div>`;
+node(...IA.root, 'root', 'Intilaqah', 'iaRoot');
+node(...IA.pub, 'br', 'Public', 'iaPub');
+node(...IA.app, 'br', 'Logged-in', 'iaApp');
+const path = (d, id) => svgH += `<path id="${id}" d="${d}" stroke="#2f4273" stroke-width="3" fill="none"/>`;
+path(`M540 620 V660 H250 V700`, 'e0'); path(`M540 620 V660 H790 V700`, 'e1');
+PUB.forEach((p, i) => { const y = 830 + i * 80; node(250, y, 'pub', p, 'pb' + i); path(`M140 760 V${y} H250`, 'ep' + i); });
+TABS.forEach((p, i) => { const y = 830 + i * 80; node(820, y, 'ar' + (i === 0 ? ' first' : ''), p, 'tb' + i); path(`M650 760 V${y} H820`, 'et' + i); });
+MORE.forEach((p, i) => { const col = i % 2, row = Math.floor(i / 2); const x = 725 + col * 200, y = 1225 + row * 56; node(x, y, 'ar sm', p, 'mr' + i); });
+path(`M820 1170 V1200`, 'em');
+iaH += `<div class="firstNote" id="fnote" style="left:388px;top:817px">first screen after login ★</div>`;
+$('#iaNodes').innerHTML = iaH; $('#iaSvg').innerHTML = svgH;
+gsap.set('.ia', { xPercent: -50, yPercent: -50 });
+
+// ---------- S4 swatches ----------
+const SW = [['#1976d2', 'blue-500', 'action/primary'], ['#fcc208', 'yellow-500', 'reward · CTA'], ['#0b2a5b', 'navy-800', 'text/heading'], ['#3daa52', 'green-500', 'state/success'], ['#e2e8f2', 'neutral-200', 'border'], ['#16202b', 'text-strong', 'text/body']];
+SW.forEach((s, i) => $('#swatches').insertAdjacentHTML('beforeend', `<div class="sw" style="left:${60 + (i % 3) * 330}px;top:${570 + Math.floor(i / 3) * 196}px"><div class="c" style="background:${s[0]}"></div><div class="t"><b>${s[1]}</b> ${s[0].toUpperCase()}<br>${s[2]}</div></div>`));
+
+// ---------- S5 annotations ----------
+const K = 1.4507, PX = 66 + 14, PY = 520 + 14;
+const P = (x, y) => [PX + x * K, PY + y * K];
+const ANN = [
+  { p: P(70, 80), y: 560, t: 'Always-on HUD', d: 'Streak, subject & tools in one glance' },
+  { p: P(290, 149), y: 760, t: 'Unit progress', d: '3 of 8 lessons — clear next step' },
+  { p: P(200, 270), y: 960, t: 'Node states', d: 'Done · active · locked — no guessing' },
+  { p: P(140, 510), y: 1180, t: 'You-are-here mascot', d: 'The rocket marks the current lesson' },
+  { p: P(330, 771), y: 1420, t: 'Thumb-zone nav', d: '5 tabs · مساري is home, not a dashboard' },
+];
+let aH = '', lH = '';
+ANN.forEach((a, i) => {
+  aH += `<div class="ann" id="an${i}" style="top:${a.y}px"><span class="num">${i + 1}</span><b>${a.t}</b><p>${a.d}</p></div>`;
+  aH += `<div class="hot" id="hot${i}" style="left:${a.p[0]}px;top:${a.p[1]}px"></div>`;
+  const ty = a.y + 22, mx = 648;
+  lH += `<path id="al${i}" d="M${a.p[0]} ${a.p[1]} H${mx - 30} Q${mx} ${a.p[1]} ${mx} ${a.p[1] + (ty > a.p[1] ? 30 : -30)} V${ty} H662" stroke="#fcc208" stroke-width="3" fill="none" opacity=".85"/>`;
+});
+$('#anns').innerHTML = aH; $('#annSvg').innerHTML = lH;
+
+// ---------- S6 cells ----------
+const CELLS = [['no-connection', 'Error · offline'], ['streak-empty', 'Empty state'], ['community-locked', 'Locked teaser'], ['insufficient-credits', 'Low credits'],
+  ['near-miss', 'Near miss'], ['retry-locked', 'Retry locked'], ['free-trial', 'Free trial'], ['challenge-intro', 'Challenge intro']];
+const cellPos = i => [60 + (i % 4) * 245, 560 + Math.floor(i / 4) * 580];
+CELLS.forEach((c, i) => { const [x, y] = cellPos(i); $('#cells').insertAdjacentHTML('beforeend', `<div class="cell" id="cl${i}" style="left:${x}px;top:${y}px"><div class="img"><img src="screens/${c[0]}.png" alt=""></div><span>${c[1]}</span></div>`); });
+
+// ---------- S7 wall ----------
+const ALL = ['map', 'mcq-correct', 'leaderboard', 'streak', 'store', 'flashcard', 'community', 'subject-select', 'login', 'lesson-complete', 'matching', 'share-card', 'grade-select', 'parent-whatsapp', 'otp', 'ai-assistant', 'purchase', 'product-detail', 'account', 'more-menu', 'free-trial', 'challenge-intro', 'near-miss', 'retry-locked', 'insufficient-credits', 'community-locked', 'no-connection', 'streak-empty'];
+const DESK = ['desktop-map', 'desktop-community'];
+for (let c = 0; c < 6; c++) {
+  let h = '<div class="col" id="wc' + c + '">';
+  for (let r = 0; r < 8; r++) { const k = (c * 5 + r * 3) % ALL.length; h += (r === 3 && c % 2 === 0) ? `<img class="d" src="screens/${DESK[(c / 2) % 2]}.png">` : `<img src="screens/${ALL[k]}.png">`; }
+  $('#wall').insertAdjacentHTML('beforeend', h + '</div>');
+}
+
+// ================= TIMELINE =================
+const tl = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
+const show = (s, t) => tl.set(s, { visibility: 'visible', opacity: 1 }, t);
+const hide = (s, t) => tl.set(s, { visibility: 'hidden' }, t);
+const out = (s, t) => { tl.to(s, { opacity: 0, y: -60, duration: .4, ease: 'power2.in' }, t); hide(s, t + .42); };
+const headIn = (sc, t) => {
+  tl.fromTo(sc + ' .tag', { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: .5 }, t);
+  tl.fromTo(sc + ' .h .ln>span', { yPercent: 110 }, { yPercent: 0, duration: .7, stagger: .12, ease: 'power4.out' }, t + .1);
+};
+const chapter = (i, t) => tl.to(`#prog span:nth-child(${i + 1}) b`, { scaleX: 1, duration: .6, ease: 'power2.inOut' }, t);
+function cursorTo(x, y, t, d = .6) { tl.to('#cursor', { x, y, duration: d, ease: 'power2.inOut' }, t); }
+function click(t) { tl.to('#cursor svg', { scale: .8, duration: .07, yoyo: true, repeat: 1, transformOrigin: '0 0' }, t); }
+function count(el, to, t, d, fmt = v => Math.round(v)) { const o = { v: 0 }; tl.to(o, { v: to, duration: d, ease: 'power2.out', immediateRender: false, onUpdate: () => $(el).textContent = fmt(o.v) }, t); }
+
+// ambient
+tl.fromTo('#grid', { x: 0, y: 0 }, { x: -40, y: -80, duration: DUR, ease: 'none' }, 0);
+tl.to('#g1', { x: 300, y: 500, duration: 20, repeat: -1, yoyo: true, ease: 'sine.inOut' }, 0);
+tl.to('#g2', { x: -400, y: -600, duration: 24, repeat: -1, yoyo: true, ease: 'sine.inOut' }, 0);
+
+// ===== S0 · INTRO 0 – 5
+show('#s0', 0);
+tl.set('#cursor', { x: 1100, y: 1700, opacity: 1 }, 0);
+tl.set('#s0frame', { clipPath: 'inset(0 100% 100% 0)' }, 0);
+tl.set('#s0sel', { width: 0, height: 0, opacity: 0 }, 0);
+tl.set('#s0 .selbox .dim', { opacity: 0 }, 0);
+cursorTo(90, 470, .1, .6);
+click(.72);
+tl.set('#s0sel', { opacity: 1 }, .75);
+tl.to('#s0sel', { width: 900, height: 980, duration: .8, ease: 'power2.inOut' }, .78);
+tl.to('#cursor', { x: 990, y: 1450, duration: .8, ease: 'power2.inOut' }, .78);
+tl.to('#s0 .selbox .dim', { opacity: 1, duration: .2 }, .9);
+tl.fromTo('#s0lbl', { opacity: 0 }, { opacity: 1, duration: .3 }, .8);
+tl.to('#s0frame', { clipPath: 'inset(0 0% 0% 0)', duration: .8, ease: 'power2.inOut' }, .78);
+tl.fromTo('#s0 .kick', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .5 }, 1.5);
+tl.fromTo('#s0 .title', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: .7, ease: 'power4.out' }, 1.6);
+tl.fromTo('#s0 .logo', { opacity: 0, scale: .4, rotation: -20 }, { opacity: 1, scale: 1, rotation: 0, duration: .6, ease: 'back.out(2)' }, 1.9);
+tl.fromTo('#s0 .arname', { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: .6 }, 2.0);
+tl.fromTo('#s0 .sub', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .6 }, 2.3);
+tl.fromTo('#s0 .chips .chip', { opacity: 0, y: 30, scale: .8 }, { opacity: 1, y: 0, scale: 1, duration: .4, stagger: .07, ease: 'back.out(2)' }, 2.6);
+tl.to('#s0sel', { opacity: 0, duration: .3 }, 2.6);
+tl.fromTo('#s0 .by', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .6 }, 3.0);
+cursorTo(1200, 1800, 2.9, .8);
+tl.fromTo('#chrome', { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: .5 }, 4.3);
+tl.fromTo('#prog', { opacity: 0 }, { opacity: 1, duration: .5 }, 4.4);
+tl.to('#s0', { opacity: 0, scale: .92, duration: .5, ease: 'power2.in' }, 4.6);
+hide('#s0', 5.1);
+
+// ===== S1 · PROBLEM 5 – 12.4
+show('#s1', 5.0); chapter(0, 5.1); headIn('#s1', 5.05);
+tl.fromTo('.icard', { opacity: 0, x: -120 }, { opacity: 1, x: 0, duration: .55, stagger: .12 }, 5.9);
+tl.set('.icard .ans', { opacity: 0, x: -30 }, 0);
+INS.forEach((_, i) => {
+  const t = 7.9 + i * .55;
+  tl.to(`#ic${i} .prob s`, { scaleX: 1, duration: .3, ease: 'power2.inOut' }, t);
+  tl.to(`#ic${i} .prob`, { opacity: .45, duration: .3 }, t + .1);
+  tl.to(`#ic${i} .bar`, { backgroundColor: '#3daa52', duration: .3 }, t + .15);
+  tl.to(`#ic${i} .ans`, { opacity: 1, x: 0, duration: .45, ease: 'back.out(2)' }, t + .2);
+  tl.to(`#ic${i}`, { borderColor: '#23553a', duration: .3 }, t + .2);
+});
+out('#s1', 12.0);
+
+// ===== S2 · RESEARCH 12.4 – 19.6
+show('#s2', 12.4); chapter(1, 12.5); headIn('#s2', 12.45);
+tl.fromTo('#s2 .methods .chip', { opacity: 0, y: 30, scale: .8 }, { opacity: 1, y: 0, scale: 1, duration: .4, stagger: .08, ease: 'back.out(2)' }, 13.2);
+tl.fromTo('#s2 .sec', { opacity: 0 }, { opacity: 1, duration: .4, stagger: 2.4 }, 13.9);
+tl.fromTo('#s2 .comps .chip', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .4, stagger: .08, ease: 'back.out(2)' }, 14.1);
+tl.fromTo('#pS', { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: .6 }, 14.8);
+tl.fromTo('#pP', { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: .6 }, 15.0);
+tl.fromTo('.persona li', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: .35, stagger: .08 }, 15.4);
+tl.fromTo('#s2 .pillars .chip', { opacity: 0, scale: .7 }, { opacity: 1, scale: 1, duration: .35, stagger: .07, ease: 'back.out(2)' }, 16.4);
+tl.set('#cursor', { x: 1150, y: 1300 }, 16.6);
+cursorTo(430, 1100, 16.7, .7); click(17.45);
+tl.to('#pS', { borderColor: '#0d99ff', boxShadow: '0 0 0 6px rgba(13,153,255,.2)', duration: .2 }, 17.45);
+cursorTo(1150, 1500, 18.4, .7);
+out('#s2', 19.2);
+
+// ===== S3 · IA 19.6 – 27
+show('#s3', 19.6); chapter(2, 19.7); headIn('#s3', 19.65);
+$$('#iaSvg path').forEach(p => { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; });
+tl.fromTo('#iaRoot', { opacity: 0, scale: .5 }, { opacity: 1, scale: 1, duration: .45, ease: 'back.out(2)' }, 20.4);
+tl.to('#e0, #e1', { strokeDashoffset: 0, duration: .5, ease: 'power2.inOut' }, 20.7);
+tl.fromTo('#iaPub, #iaApp', { opacity: 0, scale: .6 }, { opacity: 1, scale: 1, duration: .4, stagger: .1, ease: 'back.out(2)' }, 21.1);
+PUB.forEach((_, i) => { tl.to('#ep' + i, { strokeDashoffset: 0, duration: .35 }, 21.4 + i * .1); tl.fromTo('#pb' + i, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .35 }, 21.55 + i * .1); });
+TABS.forEach((_, i) => { tl.to('#et' + i, { strokeDashoffset: 0, duration: .35 }, 21.6 + i * .12); tl.fromTo('#tb' + i, { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: .35 }, 21.75 + i * .12); });
+tl.to('#em', { strokeDashoffset: 0, duration: .25 }, 22.5);
+tl.fromTo('#iaNodes .sm', { opacity: 0, scale: .6 }, { opacity: 1, scale: 1, duration: .3, stagger: .06, ease: 'back.out(2)' }, 22.6);
+tl.fromTo('#fnote', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: .4 }, 23.1);
+tl.fromTo('#tb0', { scale: 1 }, { scale: 1.12, duration: .2, yoyo: true, repeat: 1 }, 23.1);
+tl.fromTo('#s3 .states .sec', { opacity: 0 }, { opacity: 1, duration: .4 }, 23.5);
+tl.fromTo('#s3 .states .st, #s3 .states .arrow', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .4, stagger: .12, ease: 'back.out(2)' }, 23.7);
+out('#s3', 26.6);
+
+// ===== S4 · DESIGN SYSTEM 27 – 35.4
+show('#s4', 27.0); chapter(3, 27.1); headIn('#s4', 27.05);
+tl.fromTo('.sw', { opacity: 0, y: 60, scale: .85 }, { opacity: 1, y: 0, scale: 1, duration: .45, stagger: .08, ease: 'back.out(2)' }, 27.7);
+tl.fromTo('.tspec', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: .5 }, 28.3);
+tl.fromTo('.tspec .big', { opacity: 0, scale: .6 }, { opacity: 1, scale: 1, duration: .6, ease: 'back.out(2)' }, 28.5);
+tl.fromTo('.trow', { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: .35, stagger: .1 }, 28.7);
+tl.fromTo('.dchips .chip', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .3, stagger: .07 }, 29.2);
+tl.to('#dsA', { opacity: 0, y: -40, duration: .4, ease: 'power2.in' }, 30.9);
+tl.fromTo('#dsB', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: .5 }, 31.2);
+tl.set('#cursor', { x: 1150, y: 1100 }, 31.2);
+// cycle states
+const OPT = [
+  { b: '#e2e8f2', bg: '#fff', rd: '#d3dceb', rbg: '#fff', ck: 0 },
+  { b: '#1976d2', bg: '#f1f7fc', rd: '#1976d2', rbg: '#fff', ck: 0 },
+  { b: '#3daa52', bg: '#f4faf5', rd: '#3daa52', rbg: '#3daa52', ck: 1 },
+  { b: '#ff6b5a', bg: '#fff4f2', rd: '#ff6b5a', rbg: '#ff6b5a', ck: 0 },
+];
+[1, 2, 3].forEach((s, k) => {
+  const t = 31.9 + k * .9;
+  cursorTo(900, 935, t - .45, .4); click(t);
+  tl.to(`#stv${s - 1}`, { opacity: 0, y: -20, duration: .15 }, t + .05);
+  tl.fromTo(`#stv${s}`, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .2 }, t + .08);
+  tl.to('#optC', { borderColor: OPT[s].b, backgroundColor: OPT[s].bg, boxShadow: `0 5px 0 ${OPT[s].b}`, duration: .2 }, t + .08);
+  tl.to('#optC .rd', { borderColor: OPT[s].rd, backgroundColor: OPT[s].rbg, duration: .2 }, t + .08);
+  tl.to('#optC .rd svg', { opacity: OPT[s].ck, duration: .15 }, t + .08);
+  tl.fromTo('#optC', { scale: 1 }, { scale: 1.03, duration: .12, yoyo: true, repeat: 1 }, t + .08);
+});
+tl.fromTo('.nv', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .4, stagger: .12, ease: 'back.out(2)' }, 32.0);
+cursorTo(1150, 1700, 34.6, .6);
+out('#s4', 35.0);
+
+// ===== S5 · UI 35.4 – 43.4
+show('#s5', 35.4); chapter(4, 35.5); headIn('#s5', 35.45);
+tl.fromTo('#phone', { opacity: 0, y: 300, rotation: -4 }, { opacity: 1, y: 0, rotation: 0, duration: .8 }, 35.7);
+tl.to('#pin .rocket', { y: -6, duration: .6, repeat: -1, yoyo: true, ease: 'sine.inOut' }, 36.0);
+tl.to('#actNode', { boxShadow: '0 0 0 10px rgba(252,194,8,.35)', duration: .6, repeat: -1, yoyo: true, ease: 'sine.inOut' }, 36.0);
+$$('#annSvg path').forEach(p => { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; });
+ANN.forEach((_, i) => {
+  const t = 36.8 + i * .75;
+  tl.fromTo('#hot' + i, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: .3, ease: 'back.out(3)' }, t);
+  tl.to('#al' + i, { strokeDashoffset: 0, duration: .45, ease: 'power2.inOut' }, t + .1);
+  tl.fromTo('#an' + i, { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: .4 }, t + .4);
+});
+out('#s5', 43.0);
+
+// ===== S6 · STATES 43.4 – 49.6
+show('#s6', 43.4); chapter(5, 43.5); headIn('#s6', 43.45);
+tl.fromTo('.cell', { opacity: 0, y: 80, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .5, stagger: .08, ease: 'back.out(1.6)' }, 44.1);
+tl.set('#s6sel', { opacity: 1 }, 45.1);
+[0, 2, 3, 4, 7].forEach((c, k) => { const [x, y] = cellPos(c); tl.to('#s6sel', { left: x, top: y, duration: .35, ease: 'power2.inOut' }, 45.1 + k * .55); tl.fromTo('#cl' + c, { scale: 1 }, { scale: 1.05, duration: .15, yoyo: true, repeat: 1 }, 45.35 + k * .55); });
+tl.to('#s6sel', { opacity: 0, duration: .2 }, 48.0);
+out('#s6', 49.2);
+
+// ===== S7 · SCALE 49.6 – 54.6
+show('#s7', 49.6); chapter(6, 49.7);
+tl.fromTo('#wall', { opacity: 0, scale: 1.2 }, { opacity: 1, scale: 1, duration: 1 }, 49.6);
+$$('#wall .col').forEach((c, i) => tl.fromTo(c, { y: i % 2 ? -500 : 0 }, { y: i % 2 ? 0 : -500, duration: 6, ease: 'none' }, 49.6));
+headIn('#s7', 49.8);
+tl.fromTo('.stat', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: .5, stagger: .12 }, 50.4);
+count('#c1', 147, 50.5, 1.4); count('#c2', 15, 50.65, 1.2); count('#c3', 960, 50.8, 1.4); count('#c4', 2, 50.95, .8);
+tl.fromTo('#s7 .bpts .chip', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .3, stagger: .07 }, 51.6);
+tl.to('#s7', { opacity: 0, duration: .5, ease: 'power2.in' }, 54.3);
+hide('#s7', 54.8);
+tl.to('#chrome, #prog', { opacity: 0, duration: .4 }, 54.3);
+
+// ===== S8 · OUTRO 54.7 – 57
+show('#s8', 54.7);
+tl.fromTo('#s8 .logo', { opacity: 0, scale: .5, rotation: -15 }, { opacity: 1, scale: 1, rotation: 0, duration: .6, ease: 'back.out(2)' }, 54.75);
+tl.fromTo('#s8 .t1', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .5 }, 54.95);
+tl.fromTo('#s8 .t2', { opacity: 0, letterSpacing: '.6em' }, { opacity: 1, letterSpacing: '.2em', duration: .6 }, 55.1);
+tl.fromTo('#s8 .line', { scaleX: 0 }, { scaleX: 1, duration: .5 }, 55.2);
+tl.fromTo('#s8 .who', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .5 }, 55.3);
+tl.fromTo('#s8 .flow > *', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .3, stagger: .05 }, 55.5);
+tl.fromTo('#s8 .foot', { opacity: 0 }, { opacity: 1, duration: .4 }, 56.0);
+tl.set({}, {}, DUR);
+
+window.seek = t => { tl.seek(t, false); };
+window.DUR = DUR;
+window.ready = (async () => {
+  for (const f of ['800 40px Inter', '900 40px Inter', '600 40px Inter', '400 40px "JetBrains Mono"', '700 40px "JetBrains Mono"']) await document.fonts.load(f, 'Ab');
+  for (const w of [600, 700, 800, 900]) await document.fonts.load(w + ' 40px Cairo', 'أبج');
+  await document.fonts.ready;
+  await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+  return true;
+})();
+if (!location.search.includes('render')) {
+  const fit = () => { const k = Math.min(innerWidth / 1080, innerHeight / 1920); document.body.style.cssText = `width:${innerWidth}px;height:${innerHeight}px;display:flex;align-items:center;justify-content:center;background:#000`; $('#stage').style.cssText = `transform:scale(${k});flex:none`; };
+  fit(); addEventListener('resize', fit);
+  window.ready.then(() => { const t0 = performance.now(); const loop = () => { tl.seek(((performance.now() - t0) / 1000) % DUR, false); requestAnimationFrame(loop); }; loop(); });
+}
+</script>
+</body>
+</html>
