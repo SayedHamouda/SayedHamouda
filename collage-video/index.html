@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1080">
+<title>Intilaqah · Collage Case Study</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<style>
+:root{--ink:#141414;--coral:#f0725a;--coral2:#f6a593;--green:#a6d88a;--green2:#cfeabf;--olive:#b0ba6c;--paper:#efede8}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:#ecebe6;font-family:'Cairo',sans-serif;color:var(--ink)}
+.bgp{position:absolute;inset:0;background-size:cover}
+#bg1{background-image:url(assets/tex/paper_bg.jpg)}
+#bg2{background-image:url(assets/tex/paper_bg2.jpg);opacity:0}
+.scene{position:absolute;inset:0;opacity:0;visibility:hidden}
+.ob{position:absolute;display:block;pointer-events:none}
+.circle{position:absolute;border-radius:50%}
+.circle.grid{background-image:linear-gradient(rgba(255,255,255,.55) 2px,transparent 2px),linear-gradient(90deg,rgba(255,255,255,.55) 2px,transparent 2px);background-size:34px 34px}
+.half{position:absolute;overflow:hidden}
+.half i{position:absolute;border-radius:50%}
+.kick{position:absolute;right:80px;top:200px;font-family:'Inter';font-weight:800;font-size:46px;letter-spacing:-.02em;direction:ltr;color:var(--ink)}
+.hl{position:absolute;right:70px;left:60px;top:270px;font-weight:900;font-size:96px;line-height:1.22;letter-spacing:0}
+.hl .l{display:block}
+.hl .w{display:inline-block}
+.hl .c{color:var(--coral)}
+.sub{position:absolute;right:80px;left:120px;font-weight:700;font-size:44px;line-height:1.55;color:#2b2b2b}
+/* black tape label */
+.lbl{position:absolute;white-space:nowrap;background:#171717;color:#f4f2ec;font-weight:800;font-size:40px;padding:6px 34px 10px;clip-path:polygon(1% 8%,6% 0,32% 6%,58% 1%,84% 7%,99% 0,100% 88%,95% 100%,70% 93%,44% 100%,18% 94%,0 100%);box-shadow:0 6px 10px rgba(0,0,0,.18)}
+.lbl.co{background:var(--coral);color:#fff}
+.lbl.gr{background:var(--green);color:var(--ink)}
+.lbl.en{font-family:'Inter';direction:ltr;font-weight:700}
+/* scraps with content */
+.note{position:absolute;background-size:100% 100%;padding:56px 56px}
+.note .tg{font-family:'Inter';font-weight:700;font-size:26px;letter-spacing:.06em;direction:ltr;text-align:right;opacity:.7}
+.note .tga{font-weight:800;font-size:30px;opacity:.75}
+.note .q{font-weight:800;font-size:40px;line-height:1.5;margin-top:6px}
+.tape{position:absolute;width:220px;height:62px;background-size:100% 100%}
+.spark{position:absolute;font-family:'Inter';font-weight:300;color:var(--ink);font-size:60px;line-height:1}
+.mark{position:absolute;font-family:'Inter';font-weight:400;color:#666;font-size:40px}
+svg.draw{position:absolute;overflow:visible}
+svg.draw path{fill:none;stroke:var(--ink);stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+.shot{position:absolute;background:#fbfaf6;padding:16px 16px 56px;box-shadow:0 18px 30px rgba(0,0,0,.25)}
+.shot img{display:block;width:100%;filter:saturate(.9) contrast(1.03)}
+.shot span{position:absolute;left:0;right:0;bottom:10px;text-align:center;font-weight:800;font-size:28px}
+/* SWOT */
+.sw{position:absolute;width:450px;height:470px;background-size:100% 100%;padding:60px 56px}
+.sw b{display:block;font-family:'Inter';font-weight:900;font-size:150px;line-height:.9;direction:ltr;text-align:right}
+.sw small{display:block;font-family:'Inter';font-weight:700;font-size:28px;direction:ltr;text-align:right;margin-top:6px;opacity:.7}
+.sw p{font-weight:800;font-size:40px;line-height:1.45;margin-top:22px}
+/* table */
+.tbl{position:absolute;right:90px;top:820px;width:900px}
+.tr{display:flex;align-items:center;height:96px;border-bottom:3px dashed rgba(20,20,20,.25)}
+.tr .n{width:330px;font-weight:900;font-size:46px}
+.tr .m{flex:1;display:flex;justify-content:space-around;font-family:'Inter';font-weight:800;font-size:46px}
+.tr .m span{width:60px;text-align:center}
+.tr.h .m span{font-family:'Cairo';font-size:24px;font-weight:800;width:150px;line-height:1.2;color:#444}
+.ok{color:#3c8f42}.no{color:var(--coral)}.mid{color:#888}
+#flash{position:absolute;inset:0;background:#f4f2ec;opacity:0;z-index:60}
+#grain{position:absolute;inset:0;pointer-events:none;z-index:55;opacity:.08;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>")}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="bgp" id="bg1"></div><div class="bgp" id="bg2"></div>
+
+  <!-- ===== S1 COVER ===== -->
+  <section class="scene" id="s1">
+    <div class="circle grid" id="s1g" style="right:-260px;top:-120px;width:760px;height:760px;background-color:var(--green)"></div>
+    <div class="half" id="s1h" style="left:-10px;bottom:120px;width:420px;height:420px"><i style="left:-420px;top:0;width:840px;height:840px;background:var(--coral)"></i></div>
+    <img class="ob" id="s1st" src="assets/tex/halftone_a.png" style="left:0;top:520px;width:150px;height:780px">
+    <div class="note" id="s1card" style="right:90px;top:560px;width:900px;height:1000px;background-image:url(assets/tex/scrap_white_c.png)"></div>
+    <div class="tape" id="s1t1" style="right:440px;top:530px;background-image:url(assets/tex/tape_olive_1.png);transform:rotate(-4deg)"></div>
+    <img class="ob" id="s1rk" src="assets/cut/rocket.png" style="left:150px;top:640px;width:380px">
+    <div class="hl" id="s1ttl" style="top:1100px;right:150px;font-size:190px;line-height:1.1">انطلاقة</div>
+    <div class="kick" id="s1en" style="top:1330px;right:160px;font-size:58px">_UX Case Study.</div>
+    <div class="lbl" id="s1lb" style="right:150px;top:1440px;font-size:42px">Sayed Hamouda · UI/UX Designer</div>
+    <div class="spark" id="s1sp" style="right:120px;top:640px">✦</div>
+    <div class="mark" style="left:90px;top:1640px">×</div>
+  </section>
+
+  <!-- ===== S2 IDEA ===== -->
+  <section class="scene" id="s2">
+    <div class="kick">_the idea.</div>
+    <div class="hl" id="s2h"><span class="l">منصة تعلّم</span><span class="l">على <span class="c">مقاس</span> المراهقين</span></div>
+    <div class="circle grid" id="s2c" style="left:110px;top:760px;width:760px;height:760px;background-color:var(--coral2)"></div>
+    <div class="circle" id="s2g" style="right:-200px;top:1180px;width:520px;height:520px;background:var(--green)"></div>
+    <img class="ob" id="s2st" src="assets/cut/student.png" style="left:150px;top:720px;width:700px">
+    <img class="ob" id="s2ph" src="assets/cut/phone_c.png" style="left:690px;top:1060px;width:320px;transform:rotate(14deg)">
+    <svg class="draw" id="s2ar" style="left:560px;top:620px" width="300" height="200" viewBox="0 0 300 200"><path d="M20 30 C120 10 220 40 250 150"/><path d="M215 125 L252 155 L270 108"/></svg>
+    <div class="sub" id="s2sub" style="top:1580px">من 14 لـ 17 سنة — بأسلوبهم، وعلى موبايلهم.</div>
+    <div class="spark" style="left:120px;top:690px">✦</div>
+  </section>
+
+  <!-- ===== S3 PROBLEM ===== -->
+  <section class="scene" id="s3">
+    <div class="kick">_the problem.</div>
+    <div class="hl" id="s3h"><span class="l">المحتوى طويل…</span><span class="l c">والطلاب بيزهقوا.</span></div>
+    <img class="ob" id="s3gr" src="assets/tex/scrap_grid_b.png" style="left:80px;top:700px;width:920px;transform:rotate(1.5deg)">
+    <div class="circle" id="s3c" style="right:-160px;top:620px;width:620px;height:620px;background:var(--green)"></div>
+    <img class="ob" id="s3sl" src="assets/cut/sleepy_c.png" style="left:290px;top:690px;width:520px">
+    <img class="ob" id="s3hg" src="assets/cut/hourglass.png" style="left:60px;top:1060px;width:280px;transform:rotate(-12deg)">
+    <img class="ob" id="s3tv" src="assets/cut/tv.png" style="right:60px;top:1040px;width:300px;transform:rotate(9deg)">
+    <img class="ob" id="s3kr" src="assets/tex/scrap_kraft.png" style="left:110px;top:1300px;width:860px;height:200px">
+    <div id="s3bar" style="position:absolute;left:180px;top:1372px;width:720px;height:22px;border-radius:11px;background:rgba(20,20,20,.18)"><i id="s3fill" style="position:absolute;left:0;top:0;bottom:0;width:6%;border-radius:11px;background:var(--coral)"></i></div>
+    <div class="kick" id="s3tm" style="top:1410px;right:auto;left:180px;font-size:40px;font-family:'JetBrains Mono'">00:04 / 01:45:00</div>
+    <div class="lbl" id="s3l1" style="right:90px;top:1560px;transform:rotate(-2deg)">قلة الدافعية</div>
+    <div class="lbl co" id="s3l2" style="right:420px;top:1620px;transform:rotate(2deg)">ضعف الالتزام</div>
+    <div class="lbl" id="s3l3" style="right:200px;top:1700px;transform:rotate(-1deg)">صعوبة متابعة التقدّم</div>
+  </section>
+
+  <!-- ===== S4 COMPETITIVE ===== -->
+  <section class="scene" id="s4">
+    <div class="kick">_competitive analysis.</div>
+    <div class="hl" id="s4h"><span class="l">5 منافسين…</span><span class="l">و<span class="c">20</span> نقطة مقارنة</span></div>
+    <div class="circle grid" id="s4c" style="left:-220px;top:650px;width:680px;height:680px;background-color:var(--coral2)"></div>
+    <img class="ob" id="s4p" src="assets/tex/scrap_grid_b.png" style="left:50px;top:700px;width:980px;height:780px;transform:rotate(-1deg)">
+    <div class="tbl" id="s4t">
+      <div class="tr h"><div class="n"></div><div class="m"><span>Gamification</span><span>محتوى قصير</span><span>مجتمع حي</span></div></div>
+      <div class="tr"><div class="n">أبواب</div><div class="m"><span class="mid">▲</span><span class="no">✕</span><span class="mid">▲</span></div></div>
+      <div class="tr"><div class="n">نون أكاديمي</div><div class="m"><span class="mid">▲</span><span class="no">✕</span><span class="ok">✓</span></div></div>
+      <div class="tr"><div class="n">مثابر</div><div class="m"><span class="no">✕</span><span class="mid">▲</span><span class="no">✕</span></div></div>
+      <div class="tr"><div class="n">همم</div><div class="m"><span class="no">✕</span><span class="no">✕</span><span class="mid">▲</span></div></div>
+      <div class="tr"><div class="n">يوتيوب</div><div class="m"><span class="no">✕</span><span class="ok">✓</span><span class="no">✕</span></div></div>
+    </div>
+    <img class="ob" id="s4mg" src="assets/cut/magnifier.png" style="left:500px;top:820px;width:460px">
+    <div class="lbl" id="s4l" style="right:90px;top:1560px;font-size:38px">الفرصة: قصير + تحفيز حقيقي + مجتمع حي</div>
+    <div class="sub" id="s4sub" style="top:1660px;font-size:34px;color:#555">* ملخّص بصري من مقارنة 20 نقطة في الـcompetitive analysis</div>
+  </section>
+
+  <!-- ===== S5 SWOT ===== -->
+  <section class="scene" id="s5">
+    <div class="kick">_SWOT.</div>
+    <div class="hl" id="s5h"><span class="l">نقطة قوتنا</span><span class="l">إننا <span class="c">فاهمين الفئة.</span></span></div>
+    <img class="ob" id="s5sc" src="assets/cut/scales.png" style="left:70px;top:150px;width:300px">
+    <div class="sw" id="sw1" style="right:70px;top:640px;background-image:url(assets/tex/scrap_white_a.png);transform:rotate(-2deg)"><b>S</b><small>STRENGTHS</small><p>تركيز واضح على فئة 14–17</p></div>
+    <div class="sw" id="sw2" style="left:70px;top:660px;background-image:url(assets/tex/scrap_grid_a.png);transform:rotate(2deg)"><b>W</b><small>WEAKNESSES</small><p>مكتبة محتوى أصغر من الكبار</p></div>
+    <div class="sw" id="sw3" style="right:70px;top:1150px;background-image:url(assets/tex/scrap_green.png);transform:rotate(1.5deg)"><b>O</b><small>OPPORTUNITIES</small><p>فجوة لمنصة شبابية منظمة</p></div>
+    <div class="sw" id="sw4" style="left:70px;top:1170px;background-image:url(assets/tex/scrap_coral.png);transform:rotate(-1.5deg);color:#fff"><b>T</b><small style="opacity:.85">THREATS</small><p>منافسين كبار وبدائل مجانية</p></div>
+    <div class="tape" style="right:260px;top:620px;background-image:url(assets/tex/tape_cream_0.png);transform:rotate(5deg)" id="s5t1"></div>
+    <div class="tape" style="left:220px;top:1150px;background-image:url(assets/tex/tape_olive_0.png);transform:rotate(-6deg)" id="s5t2"></div>
+  </section>
+
+  <!-- ===== S6 AFFINITY ===== -->
+  <section class="scene" id="s6">
+    <div class="kick">_affinity mapping.</div>
+    <div class="hl" id="s6h"><span class="l">سمعنا الطلاب…</span><span class="l c">8 محاور.</span></div>
+    <img class="ob" id="s6sp" src="assets/cut/speech_c.png" style="left:40px;top:150px;width:240px">
+    <div class="note" id="q1" style="right:50px;top:590px;width:780px;height:330px;background-image:url(assets/tex/scrap_white_a.png);transform:rotate(-3deg)"><div class="tga">الدراسة والروتين</div><div class="q">"الجلسة الطويلة بتخليني أزهق… أفضل 20 دقيقة وأقوم."</div></div>
+    <div class="note" id="q2" style="left:50px;top:915px;width:780px;height:330px;background-image:url(assets/tex/scrap_green.png);transform:rotate(3deg)"><div class="tga">العوائق التقنية</div><div class="q">"النت ساعات بيقطع — لازم يكون في Offline mode."</div></div>
+    <div class="note" id="q3" style="right:50px;top:1240px;width:780px;height:330px;background-image:url(assets/tex/scrap_grid_a.png);transform:rotate(-1.5deg)"><div class="tga">التحفيز</div><div class="q">"المنافسة مع صحابي على لوحة الصدارة بتحفّزني أذاكر أكتر."</div></div>
+    <div class="note" id="q4" style="left:50px;top:1565px;width:780px;height:320px;background-image:url(assets/tex/scrap_coral.png);transform:rotate(2.5deg);color:#fff"><div class="tga">التحفيز</div><div class="q">"الشارات لو مالهاش فايدة حقيقية مابتحمّسنيش."</div></div>
+    <div class="tape" id="qt1" style="right:330px;top:568px;background-image:url(assets/tex/tape_olive_1.png);transform:rotate(-6deg)"></div>
+    <div class="tape" id="qt2" style="left:330px;top:893px;background-image:url(assets/tex/tape_cream_1.png);transform:rotate(7deg)"></div>
+    <div class="tape" id="qt3" style="right:330px;top:1218px;background-image:url(assets/tex/tape_olive_2.png);transform:rotate(4deg)"></div>
+    <div class="tape" id="qt4" style="left:330px;top:1543px;background-image:url(assets/tex/tape_cream_2.png);transform:rotate(-5deg)"></div>
+  </section>
+
+  <!-- ===== S7 PERSONA ===== -->
+  <section class="scene" id="s7">
+    <div class="kick">_persona.</div>
+    <div class="circle grid" id="s7c" style="left:-120px;top:480px;width:900px;height:900px;background-color:var(--coral2)"></div>
+    <img class="ob" id="s7st" src="assets/tex/halftone_a.png" style="left:0;top:1180px;width:120px;height:700px">
+    <img class="ob" id="s7g" src="assets/cut/girl.png" style="left:-20px;top:560px;width:780px">
+    <div class="hl" id="s7n" style="top:300px;font-size:116px"><span class="l">سارة</span><span class="l">العُمانية</span></div>
+    <div class="lbl" id="s7a" style="right:90px;top:1300px">16 سنة · مسقط · ثانوي</div>
+    <svg class="draw" id="s7ar" style="right:120px;top:600px" width="220" height="160" viewBox="0 0 220 160"><path d="M200 20 C140 30 80 70 40 140"/><path d="M30 100 L38 142 L78 128"/></svg>
+    <img class="ob" id="s7ph" src="assets/cut/phone.png" style="right:60px;top:820px;width:260px;transform:rotate(-14deg)">
+    <img class="ob" id="s7bk" src="assets/cut/books.png" style="right:250px;top:960px;width:260px;transform:rotate(8deg)">
+    <div class="lbl gr" id="s7p1" style="right:90px;top:1420px;font-size:36px">🎯 تبسيط الفيزياء والكيمياء</div>
+    <div class="lbl gr" id="s7p2" style="right:200px;top:1510px;font-size:36px">🎯 مراجعة سريعة قبل الاختبار</div>
+    <div class="lbl co" id="s7p3" style="right:90px;top:1600px;font-size:36px">😩 ملل من المحتوى الطويل</div>
+    <div class="lbl co" id="s7p4" style="right:260px;top:1690px;font-size:36px">😩 مافيش دعم فوري للأسئلة</div>
+  </section>
+
+  <!-- ===== S8 INSIGHTS → FEATURES ===== -->
+  <section class="scene" id="s8">
+    <div class="kick">_insights → features.</div>
+    <div class="hl" id="s8h"><span class="l">من الـInsights</span><span class="l">لـ<span class="c">مميزات حقيقية.</span></span></div>
+    <div class="circle" id="s8c" style="left:200px;top:820px;width:680px;height:680px;background:var(--green)"></div>
+    <img class="ob" id="s8sp" src="assets/cut/sprout.png" style="left:340px;top:960px;width:400px">
+    <img class="ob" id="s8tr" src="assets/cut/tree_c.png" style="left:260px;top:800px;width:560px;opacity:0">
+    <img class="ob" id="s8dr" src="assets/cut/drop.png" style="left:470px;top:640px;width:140px">
+    <div class="lbl en" id="f1" style="right:70px;top:700px">Microlearning</div>
+    <div class="lbl co" id="f2" style="left:60px;top:780px">لوحة صدارة</div>
+    <div class="lbl" id="f3" style="right:40px;top:1120px">🎁 Mastery Box</div>
+    <div class="lbl gr" id="f4" style="left:40px;top:1220px">وضع Offline</div>
+    <div class="lbl en" id="f5" style="right:80px;top:1460px">PhET labs</div>
+    <div class="lbl co" id="f6" style="left:70px;top:1540px">تقارير أسبوعية لولي الأمر</div>
+    <img class="ob" id="s8gf" src="assets/cut/gift_c.png" style="right:90px;top:1600px;width:220px;transform:rotate(-8deg)">
+  </section>
+
+  <!-- ===== S9 PRODUCT ===== -->
+  <section class="scene" id="s9">
+    <div class="kick">_the product.</div>
+    <div class="hl" id="s9h"><span class="l">والفكرة…</span><span class="l c">بقت منتج.</span></div>
+    <div class="circle grid" id="s9c" style="right:-180px;top:640px;width:760px;height:760px;background-color:var(--green)"></div>
+    <div class="shot" id="sh1" style="left:40px;top:760px;width:380px;transform:rotate(-7deg)"><img src="assets/screens/map.png"><span>مساري</span></div>
+    <div class="shot" id="sh3" style="right:30px;top:780px;width:380px;transform:rotate(6deg)"><img src="assets/screens/leaderboard.png"><span>الصدارة</span></div>
+    <div class="shot" id="sh2" style="left:330px;top:700px;width:420px;transform:rotate(-1deg)"><img src="assets/screens/mcq-correct.png"><span>الاختبار</span></div>
+    <div class="tape" id="s9t" style="left:430px;top:680px;background-image:url(assets/tex/tape_olive_1.png);transform:rotate(-3deg)"></div>
+    <img class="ob" id="s9rk" src="assets/cut/rocket_c.png" style="left:40px;top:1480px;width:300px;transform:rotate(18deg)">
+    <div class="lbl" id="s9l" style="right:90px;top:1720px">+147 شاشة · Mobile & Desktop</div>
+  </section>
+
+  <!-- ===== S10 OUTRO ===== -->
+  <section class="scene" id="s10">
+    <div style="position:absolute;left:0;top:0;bottom:0;width:70px;background:var(--coral)" id="s10s"></div>
+    <img class="ob" id="s10st" src="assets/tex/halftone_a.png" style="left:70px;top:560px;width:120px;height:800px">
+    <div class="note" id="s10card" style="left:150px;top:520px;width:860px;height:900px;background-image:url(assets/tex/scrap_white_c.png)"></div>
+    <img class="ob" id="s10lg" src="assets/logo.png" style="left:470px;top:640px;width:200px">
+    <div class="hl" id="s10t" style="top:900px;right:220px;left:220px;text-align:center;font-size:150px">انطلاقة</div>
+    <div class="kick" id="s10e" style="top:1110px;right:0;left:150px;text-align:center;font-size:44px">_UX Case Study.</div>
+    <div class="lbl" id="s10l" style="right:300px;top:1220px">Sayed Hamouda — UI/UX Designer</div>
+    <div class="circle" id="s10g" style="right:-160px;bottom:-200px;width:520px;height:520px;background:var(--green)"></div>
+  </section>
+
+  <div id="grain"></div>
+  <div id="flash"></div>
+</div>
+
+<script src="assets/gsap.min.js"></script>
+<script>
+const DUR = 64;
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+let _s = 77; const rnd = () => { _s = (_s * 16807) % 2147483647; return _s / 2147483647; };
+// split headline words
+$$('.hl .l').forEach(l => { const walk = n => [...n.childNodes].forEach(c => { if (c.nodeType === 3) { const f = document.createDocumentFragment(); c.textContent.split(/(\s+)/).forEach(p => { if (!p) return; if (/^\s+$/.test(p)) f.append(' '); else { const s = document.createElement('span'); s.className = 'w'; s.textContent = p; f.append(s); } }); c.replaceWith(f); } else if (c.nodeType === 1 && !c.classList.contains('w')) walk(c); }); walk(l); });
+$$('.hl').forEach(h => { if (!h.querySelector('.l')) { const t = h.textContent; h.innerHTML = `<span class="l"><span class="w">${t}</span></span>`; } });
+
+const tl = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
+const show = (s, t) => tl.set(s, { visibility: 'visible', opacity: 1 }, t);
+const hide = (s, t) => tl.set(s, { visibility: 'hidden' }, t);
+// entrance helpers (keep authored rotation via CSS var through GSAP 'rotation' parse)
+const rot = el => { const m = /rotate\((-?[\d.]+)deg\)/.exec($(el).style.transform || ''); return m ? +m[1] : 0; };
+function slide(el, t, dir = 1, d = .6, dist = 1200) { tl.fromTo(el, { x: dir * dist, rotation: rot(el) + dir * 8 }, { x: 0, rotation: rot(el), duration: d, ease: 'power4.out' }, t); }
+function drop(el, t, d = .55) { tl.fromTo(el, { y: -1400, rotation: rot(el) - 10 }, { y: 0, rotation: rot(el), duration: d, ease: 'back.out(1.3)' }, t); }
+function rise(el, t, d = .6) { tl.fromTo(el, { y: 1400, rotation: rot(el) + 6 }, { y: 0, rotation: rot(el), duration: d, ease: 'power4.out' }, t); }
+function pop(el, t, d = .45) { tl.fromTo(el, { scale: 0, rotation: rot(el) - 12 }, { scale: 1, rotation: rot(el), duration: d, ease: 'back.out(2.2)' }, t); }
+function stamp(el, t) { tl.fromTo(el, { scale: 1.8, opacity: 0, rotation: rot(el) }, { scale: 1, opacity: 1, rotation: rot(el), duration: .28, ease: 'power3.in' }, t); }
+function grow(el, t, d = .7) { tl.fromTo(el, { scale: 0 }, { scale: 1, duration: d, ease: 'power3.out' }, t); }
+function words(sel, t) { tl.fromTo(sel + ' .w', { y: 60, opacity: 0, rotation: () => (rnd() - .5) * 10 }, { y: 0, opacity: 1, rotation: 0, duration: .45, stagger: .08, ease: 'back.out(2)' }, t); }
+function kick(sc, t) { tl.fromTo($(sc + ' .kick'), { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: .4 }, t); }
+function draw(sel, t, d = .5) { $$(sel + ' path').forEach((p, i) => { const L = p.getTotalLength(); p.style.strokeDasharray = L; tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: i ? .2 : d, ease: 'power1.inOut' }, t + (i ? d : 0)); }); }
+function out(sc, t, mode = 'slide') {
+  if (mode === 'slide') tl.to(sc, { x: -1200, rotation: -3, duration: .45, ease: 'power3.in' }, t);
+  else tl.to(sc, { y: 1500, rotation: 4, duration: .45, ease: 'power3.in' }, t);
+  hide(sc, t + .46);
+}
+function boil(el, t0, t1) { // stop-motion jitter (8fps)
+  const n = Math.round((t1 - t0) * 8); const kf = [];
+  for (let i = 0; i < n; i++) kf.push({ x: (rnd() - .5) * 3, y: (rnd() - .5) * 3, rotation: (rnd() - .5) * .35, duration: .125, ease: 'steps(1)' });
+  tl.to(el, { keyframes: kf }, t0);
+}
+// paper "boil": alternate textures at 4fps
+for (let t = 0; t < DUR; t += .25) tl.set('#bg2', { opacity: (Math.round(t * 4) % 2) ? .55 : 0 }, t);
+// gentle float helper
+const float = (el, t, amp = 14, d = 1.6) => tl.to(el, { y: '+=' + amp, duration: d, yoyo: true, repeat: 3, ease: 'sine.inOut' }, t);
+
+// ===== S1 COVER 0 – 5.4
+show('#s1', 0);
+grow('#s1g', .05, .8); grow('#s1h i', .15, .7);
+rise('#s1st', .2);
+drop('#s1card', .35, .6); stamp('#s1t1', .95);
+tl.fromTo('#s1rk', { y: 900, rotation: 20 }, { y: 0, rotation: -6, duration: .9, ease: 'back.out(1.4)' }, .9);
+float('#s1rk', 1.9, -18, 1.1);
+words('#s1ttl', 1.5);
+tl.fromTo('#s1en', { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: .4 }, 2.1);
+slide('#s1lb', 2.5, -1, .5);
+pop('#s1sp', 2.3);
+boil('#s1card', 1, 5);
+out('#s1', 5.0);
+
+// ===== S2 IDEA 5.4 – 11.4
+show('#s2', 5.4); boil('#s2', 5.4, 11);
+kick('#s2', 5.5); words('#s2h', 5.6);
+grow('#s2c', 5.9, .7); grow('#s2g', 6.0, .7);
+rise('#s2st', 6.2, .7);
+tl.fromTo('#s2ph', { x: 800, rotation: 50 }, { x: 0, rotation: 14, duration: .6, ease: 'back.out(1.6)' }, 7.0);
+float('#s2ph', 7.7, -16, 1);
+draw('#s2ar', 7.4);
+tl.fromTo('#s2sub', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .5 }, 7.8);
+out('#s2', 11.0, 'down');
+
+// ===== S3 PROBLEM 11.4 – 18.4
+show('#s3', 11.4); boil('#s3', 11.4, 18);
+kick('#s3', 11.5); words('#s3h', 11.6);
+slide('#s3gr', 11.8, 1, .55); grow('#s3c', 11.9);
+pop('#s3sl', 12.3, .55);
+tl.to('#s3sl', { rotation: 6, duration: .5, yoyo: true, repeat: 5, ease: 'sine.inOut' }, 12.9);
+slide('#s3hg', 12.7, -1); slide('#s3tv', 12.8, 1);
+rise('#s3kr', 13.2, .5);
+tl.fromTo('#s3bar', { opacity: 0 }, { opacity: 1, duration: .2 }, 13.5);
+tl.fromTo('#s3tm', { opacity: 0 }, { opacity: 1, duration: .2 }, 13.6);
+tl.fromTo('#s3fill', { width: '1%' }, { width: '6%', duration: 2.5, ease: 'none' }, 13.6);
+stamp('#s3l1', 14.6); stamp('#s3l2', 15.0); stamp('#s3l3', 15.4);
+tl.fromTo('#s3', { x: 0 }, { x: 8, duration: .04, repeat: 3, yoyo: true, ease: 'none', immediateRender: false }, 15.45);
+out('#s3', 18.0);
+
+// ===== S4 COMPETITIVE 18.4 – 25.4
+show('#s4', 18.4); boil('#s4', 18.4, 25);
+kick('#s4', 18.5); words('#s4h', 18.6);
+grow('#s4c', 18.8); drop('#s4p', 18.9, .55);
+tl.fromTo('#s4t .tr', { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: .3, stagger: .12 }, 19.4);
+tl.fromTo('#s4t .m span', { scale: 0 }, { scale: 1, duration: .25, stagger: .03, ease: 'back.out(3)' }, 20.1);
+pop('#s4mg', 20.3, .5);
+tl.to('#s4mg', { keyframes: [{ x: -420, y: 120, duration: .9 }, { x: -120, y: 260, duration: .8 }, { x: -380, y: 380, duration: .8 }, { x: 0, y: 40, duration: .9 }], ease: 'sine.inOut' }, 20.8);
+slide('#s4l', 23.4, -1, .5);
+tl.fromTo('#s4sub', { opacity: 0 }, { opacity: 1, duration: .4 }, 23.8);
+out('#s4', 25.0, 'down');
+
+// ===== S5 SWOT 25.4 – 32
+show('#s5', 25.4); boil('#s5', 25.4, 31.6);
+kick('#s5', 25.5); words('#s5h', 25.6);
+pop('#s5sc', 25.9);
+tl.to('#s5sc', { rotation: 8, duration: .6, yoyo: true, repeat: 6, ease: 'sine.inOut' }, 26.4);
+slide('#sw1', 26.3, 1, .5); slide('#sw2', 26.7, -1, .5); slide('#sw3', 27.1, 1, .5); slide('#sw4', 27.5, -1, .5);
+stamp('#s5t1', 26.75); stamp('#s5t2', 27.95);
+out('#s5', 31.6);
+
+// ===== S6 AFFINITY 32 – 40.4
+show('#s6', 32.0); boil('#s6', 32, 40);
+kick('#s6', 32.1); words('#s6h', 32.2);
+pop('#s6sp', 32.5);
+[['#q1', '#qt1', 1], ['#q2', '#qt2', -1], ['#q3', '#qt3', 1], ['#q4', '#qt4', -1]].forEach(([q, t, d], i) => { const T = 33.0 + i * 1.5; slide(q, T, d, .5); stamp(t, T + .45); });
+out('#s6', 40.0, 'down');
+
+// ===== S7 PERSONA 40.4 – 47.6
+show('#s7', 40.4); boil('#s7', 40.4, 47.2);
+kick('#s7', 40.5);
+grow('#s7c', 40.6, .7); rise('#s7st', 40.7);
+rise('#s7g', 40.9, .7);
+words('#s7n', 41.5);
+slide('#s7a', 42.2, -1, .45);
+draw('#s7ar', 42.6, .45);
+tl.fromTo('#s7ph', { x: 500, y: -300, rotation: 40 }, { x: 0, y: 0, rotation: -14, duration: .55, ease: 'back.out(1.5)' }, 42.9);
+tl.fromTo('#s7bk', { x: 600, y: 200, rotation: -30 }, { x: 0, y: 0, rotation: 8, duration: .55, ease: 'back.out(1.5)' }, 43.1);
+float('#s7ph', 43.5, -12, .9);
+stamp('#s7p1', 43.8); stamp('#s7p2', 44.2); stamp('#s7p3', 44.8); stamp('#s7p4', 45.2);
+out('#s7', 47.2);
+
+// ===== S8 FEATURES 47.6 – 54.6
+show('#s8', 47.6); boil('#s8', 47.6, 54.2);
+kick('#s8', 47.7); words('#s8h', 47.8);
+grow('#s8c', 48.1);
+tl.fromTo('#s8sp', { scale: 0, transformOrigin: '50% 100%' }, { scale: 1, duration: .5, ease: 'back.out(2)' }, 48.4);
+tl.fromTo('#s8dr', { y: -500, opacity: 0 }, { y: 0, opacity: 1, duration: .5, ease: 'power2.in' }, 48.9);
+tl.to('#s8dr', { y: 260, opacity: 0, scale: .5, duration: .4, ease: 'power2.in' }, 49.4);
+tl.to('#s8sp', { scale: .6, opacity: 0, duration: .35 }, 49.8);
+tl.fromTo('#s8tr', { scale: .3, opacity: 0, transformOrigin: '50% 100%' }, { scale: 1, opacity: 1, duration: .6, ease: 'back.out(1.8)' }, 49.8);
+['#f1', '#f2', '#f3', '#f4', '#f5', '#f6'].forEach((f, i) => stamp(f, 50.4 + i * .35));
+pop('#s8gf', 52.6);
+out('#s8', 54.2, 'down');
+
+// ===== S9 PRODUCT 54.6 – 60.4
+show('#s9', 54.6); boil('#s9', 54.6, 60);
+kick('#s9', 54.7); words('#s9h', 54.8);
+grow('#s9c', 55.0);
+drop('#sh1', 55.3, .5); drop('#sh3', 55.55, .5); drop('#sh2', 55.8, .5); stamp('#s9t', 56.25);
+tl.fromTo('#s9rk', { x: -500, y: 400, rotation: 60 }, { x: 0, y: 0, rotation: 18, duration: .7, ease: 'back.out(1.4)' }, 56.5);
+float('#s9rk', 57.2, -16, .9);
+slide('#s9l', 57.2, -1, .5);
+out('#s9', 60.0);
+
+// ===== S10 OUTRO 60.4 – 64
+show('#s10', 60.4); boil('#s10card', 60.4, 64);
+tl.fromTo('#s10s', { x: -80 }, { x: 0, duration: .4 }, 60.45); rise('#s10st', 60.5);
+drop('#s10card', 60.5, .55);
+pop('#s10lg', 61.0, .5); words('#s10t', 61.3);
+tl.fromTo('#s10e', { opacity: 0 }, { opacity: 1, duration: .4 }, 61.7);
+slide('#s10l', 61.9, -1, .45);
+grow('#s10g', 61.0, .8);
+tl.set({}, {}, DUR);
+
+window.seek = t => { tl.seek(t, false); };
+window.DUR = DUR;
+window.ready = (async () => {
+  for (const w of [700, 800, 900]) await document.fonts.load(w + ' 60px Cairo', 'أبج');
+  for (const f of ['800 40px Inter', '900 40px Inter', '700 40px Inter', '400 40px "JetBrains Mono"']) await document.fonts.load(f, 'Ab');
+  await document.fonts.ready;
+  await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+  return true;
+})();
+if (!location.search.includes('render')) {
+  const fit = () => { const k = Math.min(innerWidth / 1080, innerHeight / 1920); document.body.style.cssText = `width:${innerWidth}px;height:${innerHeight}px;display:flex;align-items:center;justify-content:center;background:#000`; $('#stage').style.cssText = `transform:scale(${k});flex:none`; };
+  fit(); addEventListener('resize', fit);
+  window.ready.then(() => { const t0 = performance.now(); const loop = () => { tl.seek(((performance.now() - t0) / 1000) % DUR, false); requestAnimationFrame(loop); }; loop(); });
+}
+</script>
+</body>
+</html>
