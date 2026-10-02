@@ -1,164 +1,120 @@
 import React from 'react';
-import {Img, interpolate, useCurrentFrame} from 'remotion';
-import {asset, C, CAIRO} from '../theme';
+import {Easing, Img, interpolate, useCurrentFrame} from 'remotion';
+import {asset, C} from '../theme';
 
-type ScreenProps = {
-  /** path under /public, e.g. "screens/m-path.png" */
-  src: string;
-  /** label shown on the drawn placeholder when the export is missing */
-  label: string;
-  /** scroll from top to bottom between these frames (ScrollShot) */
-  scroll?: [number, number];
-  kind: 'mobile' | 'web';
-  tint?: string;
-};
-
-/** Screen image that fills its frame; scrolls vertically when `scroll` is set. */
-export const Screen: React.FC<ScreenProps> = ({src, label, scroll, kind, tint = C.blue}) => {
+/** Screen image; `scroll` pans a tall export from top to bottom between two frames. */
+export const Screen: React.FC<{name: string; scroll?: [number, number]; pos?: string}> = ({name, scroll, pos}) => {
   const frame = useCurrentFrame();
-  const url = asset(src);
+  const url = asset(`screens/${name}.webp`);
   const y = scroll
-    ? interpolate(frame, scroll, [0, 100], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})
+    ? interpolate(frame, scroll, [0, 100], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.inOut(Easing.cubic)})
     : 0;
-  if (url)
-    return (
-      <Img
-        src={url}
-        style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: `50% ${y}%`, display: 'block'}}
-      />
-    );
-  return <Placeholder label={label} kind={kind} tint={tint} />;
+  if (!url) return <div style={{width: '100%', height: '100%', background: C.line}} />;
+  return (
+    <Img
+      src={url}
+      style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: pos ?? `50% ${y}%`, display: 'block'}}
+    />
+  );
 };
 
-/** Drawn stand-in (header, hero, cards) so the cut works before the Figma exports land. */
-const Placeholder: React.FC<{label: string; kind: 'mobile' | 'web'; tint: string}> = ({label, kind, tint}) => {
-  const m = kind === 'mobile';
-  const bar = (w: string, h = 18, c = C.line) => <div style={{width: w, height: h, borderRadius: h / 2, background: c}} />;
-  return (
+/** Flat phone: 375×844 @2x = 750×1688, radius 56, ink border, no shadow. */
+export const PhoneFrame: React.FC<{scale?: number; children: React.ReactNode; style?: React.CSSProperties; bezel?: number}> = ({
+  scale = 1,
+  children,
+  style,
+  bezel = 12,
+}) => (
+  <div style={{width: (750 + bezel * 2) * scale, height: (1688 + bezel * 2) * scale, ...style}}>
     <div
-      dir="rtl"
       style={{
-        width: '100%',
-        height: '100%',
-        background: C.surface,
-        fontFamily: CAIRO,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: m ? 28 : 18,
-        padding: m ? 44 : 28,
+        width: 750 + bezel * 2,
+        height: 1688 + bezel * 2,
+        transform: `scale(${scale})`,
+        transformOrigin: 'top left',
+        borderRadius: 64,
+        background: C.ink,
+        padding: bezel,
         boxSizing: 'border-box',
       }}
     >
-      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-        <div style={{fontWeight: 800, fontSize: m ? 40 : 26, color: C.ink}}>انطلاقة</div>
-        <div style={{width: m ? 64 : 40, height: m ? 64 : 40, borderRadius: 99, background: C.yellow}} />
-      </div>
-      <div
-        style={{
-          background: tint,
-          borderRadius: m ? 32 : 20,
-          padding: m ? 36 : 24,
-          color: C.white,
-          fontWeight: 800,
-          fontSize: m ? 46 : 30,
-          lineHeight: 1.3,
-          minHeight: m ? 260 : 130,
-        }}
-      >
-        {label}
-        <div style={{marginTop: 18, width: '50%', height: 14, borderRadius: 7, background: 'rgba(255,255,255,.45)'}} />
-      </div>
-      <div style={{display: 'grid', gridTemplateColumns: m ? '1fr 1fr' : '1fr 1fr 1fr', gap: m ? 24 : 16}}>
-        {[C.yellow, C.green, C.orange, C.purple, C.blue, C.yellow].slice(0, m ? 4 : 6).map((c, i) => (
-          <div
-            key={i}
-            style={{
-              background: C.white,
-              border: `3px solid ${C.line}`,
-              borderRadius: m ? 28 : 16,
-              padding: m ? 24 : 16,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 12,
-            }}
-          >
-            <div style={{width: m ? 64 : 36, height: m ? 64 : 36, borderRadius: 16, background: c}} />
-            {bar('80%', m ? 16 : 10)}
-            {bar('55%', m ? 16 : 10)}
-          </div>
+      <div style={{width: 750, height: 1688, borderRadius: 54, overflow: 'hidden', position: 'relative', background: C.white}}>{children}</div>
+    </div>
+  </div>
+);
+
+/** Flat browser: ink top bar with 3 dots; content keeps the 1440 aspect. */
+export const BrowserFrame: React.FC<{width?: number; height?: number; children: React.ReactNode; style?: React.CSSProperties}> = ({
+  width = 960,
+  height,
+  children,
+  style,
+}) => {
+  const h = height ?? Math.round((width - 12) * (1024 / 1440)) + 46 + 12;
+  return (
+    <div
+      style={{
+        width,
+        height: h,
+        borderRadius: 22,
+        border: `6px solid ${C.ink}`,
+        background: C.white,
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        boxSizing: 'border-box',
+        ...style,
+      }}
+    >
+      <div style={{height: 40, flex: 'none', background: C.ink, display: 'flex', alignItems: 'center', gap: 10, paddingLeft: 16}}>
+        {['#FF5F57', '#FEBC2E', '#28C840'].map((c) => (
+          <div key={c} style={{width: 13, height: 13, borderRadius: 7, background: c}} />
         ))}
+        <div style={{flex: 1, height: 20, margin: '0 18px 0 12px', borderRadius: 10, background: 'rgba(255,255,255,.14)'}} />
       </div>
-      {bar('100%', m ? 88 : 48, C.yellow)}
+      <div style={{flex: 1, position: 'relative', overflow: 'hidden'}}>{children}</div>
     </div>
   );
 };
 
-/** Flat phone: 375×812 ×2, radius 56, 8px ink border, no shadow. `scale` shrinks the whole thing. */
-export const PhoneFrame: React.FC<{scale?: number; children: React.ReactNode; style?: React.CSSProperties}> = ({
-  scale = 1,
-  children,
-  style,
-}) => (
-  <div style={{width: 750 * scale, height: 1624 * scale, ...style}}>
-    <div
-      style={{
-        width: 750,
-        height: 1624,
-        transform: `scale(${scale})`,
-        transformOrigin: 'top left',
-        borderRadius: 56,
-        border: `8px solid ${C.ink}`,
-        background: C.ink,
-        overflow: 'hidden',
-        position: 'relative',
-        boxSizing: 'border-box',
-      }}
-    >
-      <div style={{position: 'absolute', inset: 0, borderRadius: 48, overflow: 'hidden', background: C.white}}>{children}</div>
-      {/* notch */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 18,
-          left: '50%',
-          width: 200,
-          height: 44,
-          marginLeft: -100,
-          borderRadius: 22,
-          background: C.ink,
-        }}
-      />
-    </div>
-  </div>
-);
+export type Shot = {name: string; dur: number; scroll?: boolean};
 
-/** Flat browser: 48px top bar with 3 dots, content 960 wide (1440 scaled). */
-export const BrowserFrame: React.FC<{width?: number; height?: number; children: React.ReactNode; style?: React.CSSProperties}> = ({
-  width = 960,
-  height = 640,
-  children,
-  style,
-}) => (
-  <div
-    style={{
-      width,
-      height,
-      borderRadius: 24,
-      border: `6px solid ${C.ink}`,
-      background: C.white,
-      overflow: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      boxSizing: 'border-box',
-      ...style,
-    }}
-  >
-    <div style={{height: 48, flex: 'none', background: C.ink, display: 'flex', alignItems: 'center', gap: 12, paddingLeft: 20}}>
-      {['#FF5F57', '#FEBC2E', '#28C840'].map((c) => (
-        <div key={c} style={{width: 16, height: 16, borderRadius: 8, background: c}} />
-      ))}
-      <div style={{flex: 1, height: 24, margin: '0 24px 0 16px', borderRadius: 12, background: 'rgba(255,255,255,.12)'}} />
-    </div>
-    <div style={{flex: 1, position: 'relative', overflow: 'hidden'}}>{children}</div>
-  </div>
-);
+/**
+ * Plays shots back to back inside a frame. Each new shot pushes in from the right
+ * (RTL reading direction) over 8 frames with a slight scale, the old one slides out.
+ */
+export const Cycle: React.FC<{shots: Shot[]; offset?: number}> = ({shots, offset = 0}) => {
+  const frame = useCurrentFrame() - offset;
+  let at = 0;
+  const spans = shots.map((s) => {
+    const a = at;
+    at += s.dur;
+    return [a, at] as const;
+  });
+  return (
+    <>
+      {shots.map((sh, i) => {
+        const [a, b] = spans[i];
+        if (frame < a - 8 || frame > b + 8) return null;
+        const inP = i === 0 ? 1 : interpolate(frame, [a - 8, a], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.cubic)});
+        const last = i === shots.length - 1;
+        const outP = last ? 0 : interpolate(frame, [b - 8, b], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.in(Easing.cubic)});
+        const x = (1 - inP) * 100 - outP * 35;
+        return (
+          <div
+            key={`${sh.name}${i}`}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              transform: `translateX(${x}%) scale(${1 - outP * 0.08})`,
+              opacity: 1 - outP * 0.6,
+              zIndex: i,
+            }}
+          >
+            <Screen name={sh.name} scroll={sh.scroll ? [a + offset + 6, b + offset - 4] : undefined} />
+          </div>
+        );
+      })}
+    </>
+  );
+};

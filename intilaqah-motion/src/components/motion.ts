@@ -29,3 +29,10 @@ export const useExit = (len: number, dur = 10) => {
   const frame = useCurrentFrame();
   return interpolate(frame, [len - dur, len], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
 };
+
+/** Snappy spring for the faster cut (stiff, light overshoot). */
+export const useSnap = (delay = 0) => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  return spring({frame: frame - delay, fps, config: {damping: 13, stiffness: 190, mass: 0.7}});
+};

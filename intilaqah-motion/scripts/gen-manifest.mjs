@@ -2,7 +2,7 @@
 // to drawn placeholders for anything not exported yet.
 import {readdirSync, writeFileSync, existsSync} from 'node:fs';
 
-const dirs = ["screens", "brand", "ds", "audio"];
+const dirs = ["screens", "brand", "ds", "audio", "mascot"];
 const files = [];
 for (const d of dirs) {
   const p = new URL(`../public/${d}`, import.meta.url);

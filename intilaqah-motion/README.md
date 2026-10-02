@@ -1,51 +1,45 @@
 # انطلاقة — Motion Case Study (Remotion)
 
-فيديو رأسي 1080×1920 · 30fps · 4:00 (7200 فريم) — تنفيذ سكريبت «انطلاقة — سكريبت فيديو الموشن».
+فيديو رأسي 1080×1920 · 30fps · 4:00 — كل الشاشات والماسكوت **حقيقيين من ملف Figma** (`UAwhvxrMQRytR7ZpQG9vCq`).
 
 ## التشغيل
 
 ```bash
 npm install
-npm run studio          # معاينة وتعديل
-npm run render          # → out/intilaqah.mp4
+npm run studio                  # معاينة وتعديل
+scripts/render-chunks.sh        # → out/intilaqah.mp4 (بيرندر على أجزاء مع retry)
 ```
 
-## الأصول (Assets)
+## الهيكل الزمني (`src/timeline.json` — نفس الملف بيظبط الموسيقى)
 
-| المجلد | المحتوى | الحالة |
-|---|---|---|
-| `public/screens/` | شاشات الموبايل (@2x) والويب (@1x) — أسماء الملفات من الـAsset Manifest | **لسه — الفيديو بيعرض بدائل مرسومة لحد ما تتحط** |
-| `public/brand/` | `sayed-avatar.jpg` ✓ · `asset-mascot-launch.svg` · `logo-intilaqah.svg` | الصورة موجودة · الصاروخ واللوجو مرسومين بالكود كبديل |
-| `public/ds/` | `ds-colors.png` · `ds-type.png` · `ds-spacing.png` · `ds-buttons.png` · `ds-mascot.png` · `ds-icons.png` | اختياري — المشهد 6 مرسوم بالكود من التوكنز |
-| `public/audio/music.mp3` | تراك lo-fi أصلي 120 BPM + whoosh/pop | ✓ (`npm run music` يعيد توليده) |
-| `public/fonts/` | Cairo 400–800 (عربي + لاتيني) محلي | ✓ |
+| الوقت | المشهد |
+|---|---|
+| 0:00 | الافتتاحية — الصاروخ الحقيقي ينطلق + اللوجو + شاشات تعدّي في الخلفية |
+| 0:10 | المشكلة |
+| 0:22 | الفكرة — خريطة ← مهمة ← تحدّي ← تقدّم (بلقطات حقيقية) |
+| 0:34 | رحلة الطالب — 7 محطات، كل محطة بشاشتها |
+| 0:52 | قرارات UX — 6 قرارات، كل قرار بالشاشة اللي بتثبته |
+| 1:08 | Design System — ألوان · خط · مسافات · مكوّنات · الماسكوت بـ12 حالة · أيقونات وشارات |
+| 1:38 | جولة الشاشات — 11 فصل (📱 + 🖥️) · ~80 شاشة |
+| 3:06 | **لوحة التحكم** — 9 موديولات |
+| 3:26 | صفحة الهبوط (ويب + موبايل) |
+| 3:34 | الأرقام |
+| 3:46 | قبل ⇠ بعد |
+| 3:54 | الختام |
 
-أي ملف تحطّه بالاسم الصح في المجلد بيستبدل البديل المرسوم تلقائيًا (`npm run manifest` بيتشغّل قبل كل render).
+## الأصول
 
-### تصدير الشاشات من Figma بأمر واحد
+| المجلد | المحتوى |
+|---|---|
+| `public/screens/` | 96 شاشة من Figma (`m-` موبايل @2x · `d-` ويب · `a-` لوحة التحكم · `l-` صفحة الهبوط) |
+| `public/mascot/` | الماسكوت الحقيقي `Asset / Mascot` — 12 حالة (PNG شفاف) |
+| `public/brand/` | اللوجو (`Asset / Logo` white/blue/navy) + صورتك |
+| `public/ds/` | لوحات `⚙️ Design System` (Foundations · Typography · Buttons · Cards · HUD · Icons · Badges · Stickers · Mascot) |
+| `public/audio/music.mp3` | تراك lo-fi أصلي 120 BPM + whoosh/pop — `npm run music` يعيد توليده من `timeline.json` |
+| `scripts/figma-map.txt` | خريطة كل ملف ↔ اسمه (للمرجعية) |
 
-```bash
-FIGMA_TOKEN=xxxx npm run figma   # Personal access token بصلاحية File content: read
-npm run render
-```
-
-## البنية
-
-```
-src/
-  theme.ts              توكنز الألوان والحركة + الخط + asset()
-  Video.tsx             جدول المشاهد + الـwipe الأصفر + الصوت
-  components/           Caption · PhoneFrame · BrowserFrame · Screen(ScrollShot) · Counter · Card · Ticker · Rocket · Stars
-  scenes/               S01…S10 حسب السكريبت
-scripts/
-  make_music.py         توليد الموسيقى (numpy + ffmpeg)
-  fetch-figma.mjs       تصدير الشاشات من Figma REST API
-  gen-manifest.mjs      يكتشف الأصول الموجودة
-```
-
-## قواعد البراند المطبّقة
+## الستايل
+- Collage خفيف: ورق مربّعات · halftone · شرائط لاصقة · حواف ممزّقة · قصاصات شاشات — بألوان البراند فقط.
 - مفيش `box-shadow` — العمق بطبقات offset مسطّحة وحدود.
-- العربي فوق والإنجليزي تحته (53% من الحجم · opacity 0.7).
-- النصوص بعيدة عن أول 250px وآخر 350px (منطقة واجهة السوشيال).
-- كل تغيير مشهد على ثانية زوجية = بداية بار عند 120 BPM.
-- الأرقام لاتيني دايمًا.
+- انتقالين بالتبادل: wipe أصفر · 3 شرائط (أصفر/أزرق/كحلي).
+- العربي فوق والإنجليزي تحته · الأرقام لاتيني · النصوص بعيدة عن أول 250px وآخر 350px.

@@ -6,7 +6,7 @@
     "manifest": "node scripts/gen-manifest.mjs && node scripts/gen-fonts.mjs",
     "music": "python3 scripts/make_music.py",
     "studio": "npm run manifest && remotion studio",
-    "render": "npm run manifest && remotion render Intilaqah out/intilaqah.mp4",
+    "render": "npm run manifest && scripts/render-chunks.sh",
     "still": "npm run manifest && remotion still Intilaqah",
     "figma": "node scripts/fetch-figma.mjs"
   },

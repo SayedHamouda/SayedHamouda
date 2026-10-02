@@ -1,46 +1,51 @@
 import React from 'react';
-import {AbsoluteFill, Audio, interpolate, Sequence, useCurrentFrame} from 'remotion';
-import {S01Opening, S02Problem, S03Idea} from './scenes/S01to03';
-import {S04Journey, S05Decisions} from './scenes/S04to05';
-import {S06DesignSystem} from './scenes/S06DesignSystem';
-import {S07Tour} from './scenes/S07Tour';
-import {S08Numbers, S09Fixes, S10Closing} from './scenes/S08to10';
+import {AbsoluteFill, Audio, Easing, interpolate, Sequence, useCurrentFrame} from 'remotion';
+import {Idea, Opening, Problem} from './scenes/A_Intro';
+import {Decisions, Journey} from './scenes/B_UX';
+import {DesignSystem} from './scenes/C_DesignSystem';
+import {Tour} from './scenes/D_Tour';
+import {Dashboard, Landing} from './scenes/E_Admin';
+import {Closing, Fixes, Numbers} from './scenes/F_End';
+import timeline from './timeline.json';
 import {asset, C, CAIRO, s} from './theme';
 
-// Scene table (seconds). Every boundary is an even second = a bar start at 120 BPM.
-export const SCENES: [number, number, React.FC][] = [
-  [0, 12, S01Opening],
-  [12, 30, S02Problem],
-  [30, 45, S03Idea],
-  [45, 70, S04Journey],
-  [70, 90, S05Decisions],
-  [90, 130, S06DesignSystem],
-  [130, 200, S07Tour],
-  [200, 215, S08Numbers],
-  [215, 230, S09Fixes],
-  [230, 240, S10Closing],
-];
+const SCENES: Record<string, React.FC> = {
+  opening: Opening,
+  problem: Problem,
+  idea: Idea,
+  journey: Journey,
+  decisions: Decisions,
+  designSystem: DesignSystem,
+  tour: Tour,
+  dashboard: Dashboard,
+  landing: Landing,
+  numbers: Numbers,
+  fixes: Fixes,
+  closing: Closing,
+};
 
-/** Brand transition: a #FCC208 panel covers the frame from the right, then uncovers to the left (12 frames). */
+/** Brand transition A: a #FCC208 panel sweeps in from the right and out to the left (12 frames). */
 const Wipe: React.FC = () => {
   const frame = useCurrentFrame();
-  const cover = interpolate(frame, [0, 6], [0, 1], {extrapolateRight: 'clamp'});
-  const reveal = interpolate(frame, [6, 12], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-  const right = 0;
-  const width = 1080 * (frame < 6 ? cover : 1 - reveal);
+  const cover = interpolate(frame, [0, 6], [0, 1], {extrapolateRight: 'clamp', easing: Easing.in(Easing.cubic)});
+  const reveal = interpolate(frame, [6, 12], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.cubic)});
   return (
-    <AbsoluteFill style={{pointerEvents: 'none'}}>
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          right: frame < 6 ? right : undefined,
-          left: frame < 6 ? undefined : 0,
-          width,
-          background: C.yellow,
-        }}
-      />
+    <AbsoluteFill>
+      <div style={{position: 'absolute', top: 0, bottom: 0, right: frame < 6 ? 0 : undefined, left: frame < 6 ? undefined : 0, width: 1080 * (frame < 6 ? cover : 1 - reveal), background: C.yellow}} />
+    </AbsoluteFill>
+  );
+};
+
+/** Brand transition B: three skewed bars (yellow · blue · navy) staggered by 2 frames. */
+const Stripes: React.FC = () => {
+  const frame = useCurrentFrame();
+  return (
+    <AbsoluteFill style={{overflow: 'hidden'}}>
+      {[C.yellow, C.blue, C.navy].map((c, i) => {
+        const f = frame - i * 2;
+        const x = interpolate(f, [0, 7, 9, 14], [1300, 0, 0, -1500], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.inOut(Easing.cubic)});
+        return <div key={c} style={{position: 'absolute', top: -200, bottom: -200, left: -200, width: 1480, background: c, transform: `translateX(${x}px) skewX(-12deg)`}} />;
+      })}
     </AbsoluteFill>
   );
 };
@@ -49,14 +54,17 @@ export const Intilaqah: React.FC = () => {
   const music = asset('audio/music.mp3');
   return (
     <AbsoluteFill style={{background: C.navy, fontFamily: CAIRO}}>
-      {SCENES.map(([a, b, Scene], i) => (
-        <Sequence key={i} from={s(a)} durationInFrames={s(b - a)} name={Scene.displayName ?? Scene.name}>
-          <Scene />
-        </Sequence>
-      ))}
-      {SCENES.slice(1).map(([a], i) => (
-        <Sequence key={`w${i}`} from={s(a) - 6} durationInFrames={12} name="wipe">
-          <Wipe />
+      {timeline.scenes.map((sc) => {
+        const Scene = SCENES[sc.id];
+        return (
+          <Sequence key={sc.id} from={s(sc.from)} durationInFrames={s(sc.to - sc.from)} name={sc.id}>
+            <Scene />
+          </Sequence>
+        );
+      })}
+      {timeline.scenes.slice(1).map((sc, i) => (
+        <Sequence key={`t${sc.id}`} from={s(sc.from) - 7} durationInFrames={20} name={`→ ${sc.id}`}>
+          {i % 2 ? <Stripes /> : <Wipe />}
         </Sequence>
       ))}
       {music ? <Audio src={music} /> : null}

@@ -21,13 +21,22 @@ rng = np.random.default_rng(7)
 L = np.zeros(N)
 R = np.zeros(N)
 
-# Scene table (seconds) — keep in sync with src/Video.tsx
-CUTS = [12, 30, 45, 70, 90, 130, 200, 215, 230]
-# counter pops: S6 component counters + S8 stat grid (stagger 4f) + S9 2,700
-POPS = [90 + 3 * 200 / 30 + 10 / 30, 90 + 3 * 200 / 30 + 16 / 30, 90 + 4 * 200 / 30 + 20 / 30]
-POPS += [200 + (16 + i * 4) / 30 + 1.2 for i in range(6)]
-POPS += [215 + 330 / 30 + 1.2]
-
+# Scene table comes from src/timeline.json so cuts stay in sync with the video.
+import json
+_tl = json.load(open(Path(__file__).resolve().parent.parent / 'src' / 'timeline.json'))
+CUTS = [sc['from'] for sc in _tl['scenes'][1:]]
+_at = {sc['id']: sc['from'] for sc in _tl['scenes']}
+# counter pops: DS component counters, the stat grid (stagger 4f) and the 2,700 tokens line
+POPS = [_at['designSystem'] + 3 * 5 + 6 / 30 + 1.2, _at['designSystem'] + 3 * 5 + 10 / 30 + 1.2]
+POPS += [_at['numbers'] + (10 + i * 4) / 30 + 1.2 for i in range(6)]
+POPS += [_at['fixes'] + 170 / 30 + 1.2]
+# tour chapter changes (seconds within the tour) get a lighter tick
+TOUR = [8, 8, 10, 14, 10, 6, 6, 8, 6, 8, 4]
+TICKS = []
+_acc = _at['tour']
+for d in TOUR[:-1]:
+    _acc += d
+    TICKS.append(_acc)
 
 def midi(n):
     return 440.0 * 2 ** ((n - 69) / 12)
@@ -144,11 +153,11 @@ PENTA = [72, 74, 76, 79, 81, 84]
 
 def section(t):
     """Arrangement intensity by time: 0 intro, 1 light, 2 full, 3 outro."""
-    if t < 12:
+    if t < 10:
         return 0
-    if t < 30:
+    if t < 22:
         return 1
-    if t < 230:
+    if t < 234:
         return 2
     return 3
 
@@ -200,6 +209,8 @@ for c in CUTS:
     addst(c - 0.3, whoosh(0.6), 0.10)
 for p in POPS:
     addst(p, pop(), 0.12)
+for tk in TICKS:
+    addst(tk - 0.2, whoosh(0.35), 0.06)
 # opening launch whoosh
 addst(0.2, whoosh(1.6), 0.12)
 
