@@ -2,3 +2,4 @@ node_modules
 out/*
 !out/intilaqah.mp4
 .DS_Store
+preview.mp4
