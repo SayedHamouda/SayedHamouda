@@ -1,6 +1,6 @@
 # الـ Prompts بتاعة الشخصيات
 
-## زياد: v1 (اتولّدت بـ Figma AI، موديل gpt-image-2.5)
+## زياد: v1 ✅ معتمدة (اتولّدت بـ Figma AI، موديل gpt-image-2.5)
 
 ```
 Character turnaround sheet, 3D stylized cartoon character, Pixar-like / Memoji-like style,
@@ -32,3 +32,33 @@ animation model sheet, no text labels.
 - عيون أكبر وجسم أقصر: لغة بصرية بتقول «مبتدئ».
 - شهادات طالعة من الشنطة: Gag «الكورسات اللي مش مكملة» جوه الشخصية نفسها.
 - 6 تعبيرات بنفس ترتيب شيت سيد: أكواد موحدة في الـ Shot List.
+
+---
+
+## بوت: v1 (اتولّدت بـ Figma AI، موديل gpt-image-2.5)
+
+```
+Character turnaround sheet, 3D stylized cartoon character, Pixar-like style, soft glossy
+plastic materials, soft studio lighting, light grey seamless background (#EDEDED).
+
+Character: "Bot", a small cute AI robot about the size of a cat (knee height of a human),
+rounded friendly pill/egg-shaped white body with a soft glossy finish, a round head that
+is a black glass screen face showing two big glowing cyan (#22D3EE) rounded-rectangle eyes,
+tiny cyan antenna light on top, short stubby rounded arms with simple mitten hands, hovers
+slightly above the ground with a soft cyan glow underneath instead of legs. On its chest a
+small rounded pill-shaped button with a sparkle icon that glows cyan. Cute, eager, a little clumsy.
+
+Layout: top row full body in 5 views (front, 3/4 front, side, 3/4 back, back) hovering
+above a thin grey ground line. Bottom row: 6 screen-face expressions using only cyan eye
+shapes: neutral, happy (^ ^), excited sparkle star eyes, confused (question mark), guilty
+side-glance, sleepy loading spinner. Bottom corners: swatches (white, black screen, cyan, light grey).
+
+Clean consistent proportions across all views, professional animation model sheet, no text labels.
+```
+
+### قرارات التصميم
+- **لون واحد مميز (Cyan `#22D3EE`):** ده لون الـ AI في الفيلم كله. أي حاجة الـ AI عملها (مطر الشاشات، وزرار Generate) تلمع بالـ Cyan.
+- **من غير رجلين وبيطير:** بيدي إحساس «سحري وسريع»، وكمان أسهل في التحريك بالـ AI Video.
+- **التعبيرات بالعيون بس:** بتتقري من بعيد على البروجكتور، ومن غير بُق، فمش محتاج Lip-sync.
+- **تعبير «guilty side-glance»:** معمول مخصوص للـ Post-credit (شاشة الـ Comic Sans).
+- **حجم قطة:** زياد يبان أكبر منه، فالـ AI يبان «مساعد» مش «تهديد» في آخر الفيلم.

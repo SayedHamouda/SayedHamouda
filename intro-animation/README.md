@@ -17,9 +17,8 @@
 - [x] السيناريو
 - [x] خريطة الكورس
 - [x] الـ Shot List
-- [x] Character Sheet زياد v1 (موجودة Preview بس، والنسخة الكاملة لسه هتترفع)
-- [ ] اعتماد شيت زياد
-- [ ] Character Sheet بوت
+- [x] Character Sheet زياد v1 ✅ معتمدة (موجودة Preview بس، والنسخة الكاملة لسه هتترفع)
+- [x] Character Sheet بوت v1 (مستنية المراجعة، وموجودة Preview بس)
 - [ ] خريطة المترو في Figma
 - [ ] Keyframes الـ 25 لقطة
 - [ ] Image-to-Video
