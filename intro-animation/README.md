@@ -6,7 +6,8 @@
 
 | الملف | المحتوى |
 |---|---|
-| [01-script.md](01-script.md) | السيناريو النهائي (7 مشاهد) |
+| [06-silent-film-v2.md](06-silent-film-v2.md) | ⭐ **النسخة الحالية:** فيلم صامت «الباب الغلط» (14 لقطة) |
+| [01-script.md](01-script.md) | ~~النسخة 1 بالحوار~~ (اتلغت) |
 | [02-course-roadmap.md](02-course-roadmap.md) | خريطة الكورس (خريطة المترو) |
 | [03-shot-list.md](03-shot-list.md) | الـ Shot List (25 لقطة) |
 | [04-character-prompts.md](04-character-prompts.md) | الـ Prompts بتاعة الشخصيات والستايل |
@@ -20,7 +21,7 @@
 - [x] خريطة الكورس
 - [x] الـ Shot List
 - [x] Character Sheet زياد v1 ✅ معتمدة (موجودة Preview بس، والنسخة الكاملة لسه هتترفع)
-- [x] Character Sheet بوت v1 (مستنية المراجعة، وموجودة Preview بس)
+- [x] Character Sheet بوت v1 ✅ معتمدة
 - [x] خريطة المترو في Figma ([الملف](https://www.figma.com/design/t8ga2oqckHEs7dW2ZLRDlg))
 - [ ] Keyframes الـ 25 لقطة
 - [ ] Image-to-Video
