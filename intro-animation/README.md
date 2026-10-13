@@ -6,7 +6,8 @@
 
 | الملف | المحتوى |
 |---|---|
-| [06-silent-film-v2.md](06-silent-film-v2.md) | ⭐ **النسخة الحالية:** فيلم صامت «الباب الغلط» (14 لقطة) |
+| [07-short-film-v3.md](07-short-film-v3.md) | ⭐ **النسخة الحالية:** الفيلم القصير «الخطوة الأولى» (11 مشهد، 3 دقايق) |
+| [06-silent-film-v2.md](06-silent-film-v2.md) | ~~النسخة 2: «الباب الغلط»~~ (اتلغت) |
 | [01-script.md](01-script.md) | ~~النسخة 1 بالحوار~~ (اتلغت) |
 | [02-course-roadmap.md](02-course-roadmap.md) | خريطة الكورس (خريطة المترو) |
 | [03-shot-list.md](03-shot-list.md) | الـ Shot List (25 لقطة) |
@@ -22,6 +23,7 @@
 - [x] الـ Shot List
 - [x] Character Sheet زياد v1 ✅ معتمدة (موجودة Preview بس، والنسخة الكاملة لسه هتترفع)
 - [x] Character Sheet بوت v1 ✅ معتمدة
+- [x] Character Sheet ماما سعاد v1 (مستنية المراجعة، Preview بس)
 - [x] خريطة المترو في Figma ([الملف](https://www.figma.com/design/t8ga2oqckHEs7dW2ZLRDlg))
 - [ ] Keyframes الـ 25 لقطة
 - [ ] Image-to-Video
