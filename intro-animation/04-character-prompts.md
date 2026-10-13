@@ -83,3 +83,21 @@ smartphone with a pink case held in both hands.
 Layout: 5 full-body views + 6 expressions (warm smile, zaghrouta, squinting at phone with glasses on
 nose tip, quietly worried smile, playful scolding, proud teary smile) + color swatches. No text labels.
 ```
+
+---
+
+## سيد: v2 (مبنية على صور سيد الحقيقية، Figma AI، موديل gpt-image-2.5)
+> الصور الشخصية نفسها ماترفعتش على GitHub. اتستخدمت للمرجعية بس.
+
+```
+"Sayed", the mentor, Egyptian man ~28, medium height, slightly stocky broad build, broad shoulders,
+round full face with soft rounded jawline, fair light-olive skin, thick dark groomed eyebrows,
+dark brown almond eyes with relaxed slightly heavy upper lids (calm confident look), straight nose,
+full lips, short full black beard (denser on chin + connected mustache, shorter on cheeks, clean
+cheek line), black hair with very short faded sides and a voluminous swept-up-and-back slightly
+messy quiff, small black stud earring in left ear.
+Outfit: plain black crew-neck t-shirt, medium-wash blue straight jeans, plain white sneakers,
+black wristwatch on left wrist.
+Expressions: calm neutral, warm smile, laughing while talking, surprised, quietly worried,
+confident one-sided smirk (signature).
+```
