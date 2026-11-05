@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "scriptwriter": {
+      "source": "nobodyonlyc/skills",
+      "sourceType": "github",
+      "skillPath": "skills/scriptwriter/SKILL.md",
+      "computedHash": "224c236e2c90bad070c185ef6f8b7e9ada7c7674ba31591a5eb7b125a13a0b09"
+    }
+  }
+}
