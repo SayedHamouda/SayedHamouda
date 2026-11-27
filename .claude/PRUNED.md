@@ -5,7 +5,7 @@ Nothing is lost: everything is in git history at commit `49a98af`.
 
 Restore one item:  `git checkout 49a98af -- .claude/skills/<name>`  (commands: `.claude/commands/<name>.md`, agents: `.claude/agents/<name>.md`)
 
-## Skills removed (280)
+## Skills removed
 
 - agent-architecture-audit
 - agent-eval
@@ -21,13 +21,11 @@ Restore one item:  `git checkout 49a98af -- .claude/skills/<name>`  (commands: `
 - android-clean-architecture
 - angular-developer
 - api-connector-builder
-- api-design
 - architecture-decision-records
 - automation-audit-ops
 - autonomous-agent-harness
 - autonomous-loops
 - babysit
-- backend-patterns
 - benchmark
 - benchmark-methodology
 - benchmark-optimization-loop
@@ -77,7 +75,6 @@ Restore one item:  `git checkout 49a98af -- .claude/skills/<name>`  (commands: `
 - deep-research
 - defi-amm-security
 - delivery-gate
-- deployment-patterns
 - dev-team
 - django-celery
 - django-patterns
@@ -88,7 +85,6 @@ Restore one item:  `git checkout 49a98af -- .claude/skills/<name>`  (commands: `
 - docker-patterns
 - dotnet-patterns
 - dynamic-workflow-mode
-- e2e-testing
 - ecc-guide
 - ecc-recipes
 - ecc-tools-cost-audit
@@ -182,7 +178,6 @@ Restore one item:  `git checkout 49a98af -- .claude/skills/<name>`  (commands: `
 - network-bgp-diagnostics
 - network-config-validation
 - network-interface-health
-- nextjs-turbopack
 - nodejs-keccak256
 - nutrient-document-processing
 - nuxt4-patterns
@@ -225,7 +220,6 @@ Restore one item:  `git checkout 49a98af -- .claude/skills/<name>`  (commands: `
 - rails-patterns
 - ralphinho-rfc-pipeline
 - react-native-patterns
-- react-performance
 - react-testing
 - recsys-pipeline-architect
 - recursive-decision-ledger
@@ -280,7 +274,6 @@ Restore one item:  `git checkout 49a98af -- .claude/skills/<name>`  (commands: `
 - version-bump
 - videodb
 - visa-doc-translate
-- vite-patterns
 - vue-patterns
 - weekly-digests
 - what-the
