@@ -436,3 +436,4 @@ Restore one item:  `git checkout 49a98af -- .claude/skills/<name>`  (commands: `
 - tdd-guide
 - type-design-analyzer
 - vue-reviewer
+- remotion-video-creation (replaced by the official remotion-dev skills)
